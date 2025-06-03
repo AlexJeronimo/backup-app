@@ -1,0 +1,4 @@
+server_port: 8080
+backup_directory: "E:/BackupData" # Приклад шляху для Windows
+database_path: "./data/backup.db"
+secret_salt: "mySuperLongAndRandomSaltForHashingPasswords" # Згенеруйте ДОВГИЙ, УНІКАЛЬНИЙ, випадковий рядок для вашого проекту!
