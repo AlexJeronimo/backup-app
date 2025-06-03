@@ -14,8 +14,9 @@ func CopyFiles(sourcePath, destPath string) error {
 		if os.IsNotExist(err) {
 			log.Printf("Warning: Source file does not finded: %s", sourcePath)
 			return fmt.Errorf("source file does not exist: %w", err)
+		} else {
+			return fmt.Errorf("source file open error '%s': %w", sourcePath, err)
 		}
-		fmt.Errorf("source file open error '%s': %w", sourcePath, err)
 
 	}
 	defer sourceFile.Close()

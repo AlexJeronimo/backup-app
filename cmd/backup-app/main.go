@@ -2,6 +2,7 @@ package main
 
 import (
 	"backup-app/internal/backup"
+	"backup-app/internal/database"
 	"context"
 	"fmt"
 	"log"
@@ -29,6 +30,19 @@ func main() {
 	fmt.Printf(" Secret salt (first 5 symbols): %s...\n", cfg.SecretSalt[:5])
 	fmt.Printf(" Server Timeouts: Read=%s, Write=%s, Idle=%s\n", cfg.ReadTimeout, cfg.WriteTimeout, cfg.IdleTimeout)
 	fmt.Printf(" Shutdown Timeout: %s\n", cfg.ShutdownTimeout)
+
+	//Initialize DataBase
+	db, err := database.InitDB(cfg.DatabasePath)
+	if err != nil {
+		log.Fatalf("DataBase initialization error: %v", err)
+	}
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Printf("DataBase close connection error: %v", err)
+		} else {
+			log.Println("DataBAse connection closed.")
+		}
+	}()
 
 	//--- Backup Test ---
 	sourceFile := "E:\\test.txt"
