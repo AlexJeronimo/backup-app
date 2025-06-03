@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backup-app/internal/backup"
 	"context"
 	"fmt"
 	"log"
@@ -29,10 +30,25 @@ func main() {
 	fmt.Printf(" Server Timeouts: Read=%s, Write=%s, Idle=%s\n", cfg.ReadTimeout, cfg.WriteTimeout, cfg.IdleTimeout)
 	fmt.Printf(" Shutdown Timeout: %s\n", cfg.ShutdownTimeout)
 
+	//--- Backup Test ---
+	sourceFile := "E:\\test.txt"
+
+	destFile := filepath.Join(cfg.BackupDir, "test_backup", filepath.Base(sourceFile))
+
+	log.Printf("Backup try: %s -> %s\n", sourceFile, destFile)
+	err = backup.CopyFiles(sourceFile, destFile)
+	if err != nil {
+		log.Printf("Local backup error: %v", err)
+	} else {
+		log.Printf("Local backup successfully completed for test file.")
+	}
+
+	//--- End of Backup Test ---
+
 	//Own multiplexor creating (router)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", healthHandler)
-	mux.HandleFunc("status", statusHandler)
+	mux.HandleFunc("/status", statusHandler)
 
 	//Timeouts parsing
 	readTimeout, err := time.ParseDuration(cfg.ReadTimeout)
@@ -52,7 +68,7 @@ func main() {
 
 	shutdownTimeout, err := time.ParseDuration(cfg.ShutdownTimeout)
 	if err != nil {
-		log.Fatal("Wrong format ShutdownTimeout: %v", err)
+		log.Fatalf("Wrong format ShutdownTimeout: %v", err)
 	}
 
 	//Create and configure http.Server
@@ -78,10 +94,6 @@ func main() {
 		serverErrors <- srv.ListenAndServe()
 	}()
 
-	/* if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("HTTP-server launch error: %v", err)
-	} */
-
 	//Waiting for system signal or server error
 	select {
 	case err := <-serverErrors:
@@ -105,7 +117,7 @@ func main() {
 		log.Println("Server shutdown gracefully")
 	}
 
-	log.Println("Application shutdown.")
+	log.Println("Application closed.")
 }
 
 type Config struct {
