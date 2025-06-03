@@ -44,6 +44,122 @@ func main() {
 		}
 	}()
 
+	//--- CRUD for user testing ---
+	userRepo := database.NewUserRepo(db)
+
+	log.Println("\n--- Testing CRUD for users ---")
+
+	log.Println("Create user admin...")
+	adminUser, err := userRepo.CreateUser("admin", "supersecurepassword")
+	if err != nil {
+		log.Printf("User 'admin' creation error: %v", err)
+	} else {
+		log.Printf("User 'admin' successfully created: %v", adminUser)
+	}
+
+	log.Println("Create user testuser...")
+	testUser, err := userRepo.CreateUser("testuser", "supersecurepassword")
+	if err != nil {
+		log.Printf("User 'adtestuserin' creation error: %v", err)
+	} else {
+		log.Printf("User 'testuser' successfully created: %v", testUser)
+	}
+
+	log.Println("Creating existing user 'admin', expecting to reveive error...")
+	_, err = userRepo.CreateUser("admin", "anotherpassword")
+	if err != nil {
+		log.Printf("Success: Received expected error during user creation: %v", err)
+	} else {
+		log.Printf("Error: created existing user, not expected.")
+	}
+
+	log.Println("Search for user 'admin'...")
+	foundAdmin, err := userRepo.GetUserByUsername("admin")
+	if err != nil {
+		log.Printf("Search user 'admin' error: %v", err)
+	} else {
+		log.Printf("Found user 'admin': %+v", foundAdmin)
+	}
+
+	log.Println("Search for nonexistent user....")
+	_, err = userRepo.GetUserByUsername("nonexistent")
+	if err != nil {
+		log.Printf("Success: Received expected error during nonexistent user search: %v", err)
+	} else {
+		log.Println("Error: found nonexistent user, not expected.")
+	}
+
+	log.Println("User 'admin' authentication with right password...")
+	authAdmin, err := userRepo.AuthenticateUser("admin", "supersecurepassword")
+	if err != nil {
+		log.Printf("Authentication error for 'admin': %v", err)
+	} else {
+		log.Printf("User 'admin' authentication successfull: %+v", authAdmin)
+	}
+
+	log.Println("User 'admin' authentication with wrong password, expected error...")
+	_, err = userRepo.AuthenticateUser("admin", "wrongsupersecurepassword")
+	if err != nil {
+		log.Printf("Successfull: Received expected authentication error for 'admin' with wrong password: %v", err)
+	} else {
+		log.Println("Error: User 'admin' authentication with wrong password successful, not expected.")
+	}
+
+	if testUser != nil {
+		log.Println("Update password for user 'testuser'...")
+		err = userRepo.UpdateUser(testUser, "newtestpassword")
+		if err != nil {
+			log.Printf("Error update 'testuser': %v", err)
+		} else {
+			log.Printf("Password for 'testuser' successfully updated. New hash: %s...", testUser.PasswordHash[:5])
+			_, err = userRepo.AuthenticateUser("testuser", "newtestpassword")
+			if err != nil {
+				log.Printf("Authentication error for 'testuser' with new password: %v", err)
+			} else {
+				log.Println("Authentication successfull for 'testuser' with new password.")
+			}
+		}
+	}
+
+	log.Println("Get All users...")
+	allUsers, err := userRepo.GetAllUsers()
+	if err != nil {
+		log.Printf("All user getting error: %v", err)
+	} else {
+		log.Printf("Found %d users:", len(allUsers))
+		for _, u := range allUsers {
+			createdAtStr := "N/A"
+			if u.CreatedAt.Valid {
+				createdAtStr = u.CreatedAt.Time.Format("2006-01-02 15:04:05")
+			}
+			log.Printf(" - ID: %d, Username: %s, CreatedAt: %s", u.ID, u.Username, createdAtStr)
+		}
+	}
+
+	if testUser != nil {
+		log.Printf("Delet user 'testuser' (ID: %d)...", testUser.ID)
+		err = userRepo.DeleteUser(testUser.ID)
+		if err != nil {
+			log.Printf("User delete error for 'testuser': %v", err)
+		} else {
+			log.Println("User 'testuser' was deleted successfully.")
+		}
+	}
+
+	log.Println("Check 'testuser' was deleted...")
+	_, err = userRepo.GetUserByUsername("testuser")
+	if err != nil && (err.Error() == fmt.Sprintf("user '%s' not found", "testuser")) {
+		log.Println("Success: User 'testuser' not found after deleting.")
+	} else if err != nil {
+		log.Printf("Error during user deletion checking for 'testuser': %v", err)
+	} else {
+		log.Println("Error: User 'testuser' was not deleted.")
+	}
+
+	log.Println("---End of CRUD testing for user---")
+
+	//--- End of CRUD testing for user
+
 	//--- Backup Test ---
 	sourceFile := "E:\\test.txt"
 

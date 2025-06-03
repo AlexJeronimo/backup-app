@@ -16,7 +16,7 @@ func InitDB(dbPath string) (*sql.DB, error) {
 		return nil, fmt.Errorf("DB directory creation error '%s': %w", dbDir, err)
 	}
 
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite3", dbPath+"?_loc=auto")
 	if err != nil {
 		return nil, fmt.Errorf("database open error '%s': %w", dbPath, err)
 	}
@@ -57,7 +57,7 @@ func runMigrations(db *sql.DB) error {
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				username TEXT NOT NULL UNIQUE,
 				password_hash TEXT NOT NULL,
-				created_at TEXT DEFAULT CURRENT_TIMESTAMP
+				created_at TEXT DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'now', 'localtime'))
 			);
 			CREATE INDEX idx_users_username ON users(username);
 		`,
@@ -69,8 +69,8 @@ func runMigrations(db *sql.DB) error {
 				destination_path TEXT NOT NULL,
 				schedule TEXT NOT NULL,
 				is_active BOOLEAN NOT NULL DEFAULT 1,
-				created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-				updated_at TEXT DEFAULT CURRENT_TIMESTAMP	
+				created_at TEXT DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'now', 'localtime')),
+				updated_at TEXT DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'now', 'localtime'))	
 			);
 			CREATE INDEX idx_backup_jobs_name ON backup_jobs(name);
 		`,
@@ -78,7 +78,7 @@ func runMigrations(db *sql.DB) error {
 			CREATE TABLE backup_runs (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				job_id INTEGER NOT NULL,
-				start_time TEXT NOT NULL,
+				start_time TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'now', 'localtime')),
 				end_time TEXT,
 				status TEXT NOT NULL,
 				message TEXT,
