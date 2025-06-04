@@ -178,7 +178,162 @@ func main() {
 
 	log.Println("---End of CRUD testing for user---")
 
-	//--- End of CRUD testing for user
+	//--- End of CRUD testing for user ---
+
+	//--- Testing CRUD for backup tasks ---
+
+	jobRepo := database.NewJobRepo(db)
+
+	log.Println("\n--- Testing CRUD for backup tasks ---")
+
+	log.Println("Creates backup task 'Daily Documents backup'...")
+	job1, err := jobRepo.CreateJob("Daily Document Backup", "C:\\Users\\user\\Documents", "E:\\BackupData\\Documents", "daily", true)
+	if err != nil {
+		log.Printf("Error creating task 'Daily Documents Backup': %v", err)
+	} else {
+		createdAtStr := "N/A"
+		if job1.CreatedAt.Valid {
+			createdAtStr = job1.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+		}
+		updatedAtStr := "N/A"
+		if job1.UpdatedAt.Valid {
+			updatedAtStr = job1.UpdatedAt.Time.Format("2006-01-02 15:04:05.000")
+		}
+
+		log.Printf("Backup task 'Daily Documents Backup' successfully created: ID: %d, Name: %s, Schedule: %s, Created: %s, Updated: %s",
+			job1.ID, job1.Name, job1.Schedule, createdAtStr, updatedAtStr)
+	}
+
+	log.Println("Creates backup task 'Weekly Photos Backup'...")
+	job2, err := jobRepo.CreateJob("Weekly Photos Backup", "C:\\Users\\user\\Pictures", "E:\\BackupData\\Photos", "weekly", true)
+	if err != nil {
+		log.Printf("Error creating task 'Weekly Photos Backup': %w", err)
+	} else {
+		createdAtStr := "N/A"
+		if job2.CreatedAt.Valid {
+			createdAtStr = job2.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+		}
+		updatedAtStr := "N/A"
+		if job2.UpdatedAt.Valid {
+			updatedAtStr = job2.UpdatedAt.Time.Format("2006-01-02 15:04:05.000")
+		}
+		log.Printf("Backup task 'Weekly Photos Backup' successfully created: ID: %d, Name: %s, Schedule: %s, Created: %s, Updated: %s",
+			job2.ID, job2.Name, job2.Schedule, createdAtStr, updatedAtStr)
+	}
+
+	//Try to create existing task
+
+	log.Println("Trying to create backup task 'Daily Documents backup' which exists")
+	_, err = jobRepo.CreateJob("Daily Document Backup", "C:\\Users\\user\\Documents", "E:\\BackupData\\Documents", "daily", true)
+	if err != nil {
+		log.Printf("Success: got expected error during existing task creating: %v", err)
+	} else {
+		log.Printf("Error: created existing task, not expected.")
+	}
+
+	//Get task by ID
+	if job1 != nil {
+		log.Printf("Search for task by ID %d...", job1.ID)
+		foundJob, err := jobRepo.GetJobByID(job1.ID)
+		if err != nil {
+			log.Printf("Error search task by ID %d: %v", job1.ID, err)
+		} else {
+			createdAtStr := "N/A"
+			if foundJob.CreatedAt.Valid {
+				createdAtStr = foundJob.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			updatedAtStr := "N/A"
+			if foundJob.UpdatedAt.Valid {
+				updatedAtStr = foundJob.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			log.Printf("Found task by ID %d: Name: %s, Source: %s, IsActive: %t, Created: %s, Updated: %s",
+				foundJob.ID, foundJob.Name, foundJob.SourcePath, foundJob.IsActive, createdAtStr, updatedAtStr)
+		}
+	}
+
+	//Get task by name
+	if job1 != nil {
+		log.Println("Search for task 'Weekly Photos Backup'...")
+		foundJobByName, err := jobRepo.GetJobByName("Weekly Photos Backup")
+		if err != nil {
+			log.Printf("Error search task 'Weekly Photos Backup': %v", err)
+		} else {
+			createdAtStr := "N/A"
+			if foundJobByName.CreatedAt.Valid {
+				createdAtStr = foundJobByName.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			updatedAtStr := "N/A"
+			if foundJobByName.UpdatedAt.Valid {
+				updatedAtStr = foundJobByName.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			log.Printf("Found task 'Weekly Photos Backup': ID %d, Name: %s, Source: %s, IsActive: %t, Created: %s, Updated: %s",
+				foundJobByName.ID, foundJobByName.Name, foundJobByName.SourcePath, foundJobByName.IsActive, createdAtStr, updatedAtStr)
+		}
+	}
+
+	//Update task
+	if job1 != nil {
+		log.Printf("Update task 'Daily Documents Backup' (ID %d) - change schedule and do inactive...", job1.ID)
+		job1.Schedule = "monthly"
+		job1.IsActive = false
+		err = jobRepo.UpdateJob(job1)
+		if err != nil {
+			log.Printf("Error during update task 'Daily Documents Backup': %v", err)
+		} else {
+			updatedJob, _ := jobRepo.GetJobByID(job1.ID)
+			updatedAtStr := "N/A"
+			if updatedJob.UpdatedAt.Valid {
+				updatedAtStr = updatedJob.UpdatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			log.Printf("Task 'Daily Documents Backup' successfully updated. New Schedule: %s, IsActive: %t, Updated: %s",
+				updatedJob.Schedule, updatedJob.IsActive, updatedAtStr)
+		}
+	}
+
+	//Get all tasks
+	log.Println("Get all backup tasks...")
+	allJobs, err := jobRepo.GetAllJobs()
+	if err != nil {
+		log.Printf("Error getting all backup tasks: %v", err)
+	} else {
+		log.Printf("Found %d backup tasks:", len(allJobs))
+		for _, j := range allJobs {
+			createdAtStr := "N/A"
+			if j.CreatedAt.Valid {
+				createdAtStr = j.CreatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			updatedAtStr := "N/A"
+			if j.UpdatedAt.Valid {
+				updatedAtStr = j.UpdatedAt.Time.Format("2006-01-02 15:04:05.000")
+			}
+			log.Printf(" - ID: %d, Name: %s, Active: %t, Created: %s, Updated: %s",
+				j.ID, j.Name, j.IsActive, createdAtStr, updatedAtStr)
+		}
+	}
+
+	//Delete task
+	if job2 != nil {
+		log.Printf("Deleting task 'Weekly Photos Backup' (ID: %d)...", job2.ID)
+	}
+	err = jobRepo.DeleteJob(job2.ID)
+	if err != nil {
+		log.Printf("Error deleting task 'Weekly Photos Backup': %v", err)
+	} else {
+		log.Println("Task 'Weekly Photos Backup' successfully deleted.")
+	}
+
+	log.Println("Check that 'Weekly Photos Backup' was deleted...")
+	_, err = jobRepo.GetJobByName("Weekly Photos Backup")
+	if err != nil && (err.Error() == fmt.Sprintf("backup task with '%s' not found", "Weekly Photos Backup")) {
+		log.Println("Success: task 'Weekly Photos Backup' not found after deleting")
+	} else if err != nil {
+		log.Printf("Error during checking deleting 'Weekly Photos Backup': %v", err)
+	} else {
+		log.Println("Error: task 'Weekly Photos Backup' not deleted.")
+	}
+
+	log.Println("--- end of testing CRUD for tasks ---")
+	//--- End of CRUD testing for backup tasks ---
 
 	//--- Backup Test ---
 	sourceFile := "E:\\test.txt"
