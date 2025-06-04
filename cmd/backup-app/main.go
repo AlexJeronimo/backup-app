@@ -207,7 +207,7 @@ func main() {
 	log.Println("Creates backup task 'Weekly Photos Backup'...")
 	job2, err := jobRepo.CreateJob("Weekly Photos Backup", "C:\\Users\\user\\Pictures", "E:\\BackupData\\Photos", "weekly", true)
 	if err != nil {
-		log.Printf("Error creating task 'Weekly Photos Backup': %w", err)
+		log.Printf("Error creating task 'Weekly Photos Backup': %v", err)
 	} else {
 		createdAtStr := "N/A"
 		if job2.CreatedAt.Valid {
