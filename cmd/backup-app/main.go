@@ -5,6 +5,7 @@ import (
 	"backup-app/internal/database"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -23,6 +24,24 @@ func main() {
 		log.Fatalf("Configuration load error: %v", err)
 	}
 
+	//Configure log output
+	logDir := filepath.Dir(cfg.LogFilePath)
+	if err := os.MkdirAll(logDir, 0755); err != nil {
+		log.Fatalf("Can't create log directory '%s': %v", logDir, err)
+	}
+
+	logFile, err := os.OpenFile(cfg.LogFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Can't open log file '%s': %v", cfg.LogFilePath, err)
+	}
+	defer logFile.Close()
+
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
+	// Configs Output
+
 	fmt.Printf("Configuration loaded:\n")
 	fmt.Printf(" Server Port: %d\n", cfg.ServerPort)
 	fmt.Printf(" Backup Directory: %s\n", cfg.BackupDir)
@@ -30,6 +49,7 @@ func main() {
 	fmt.Printf(" Secret salt (first 5 symbols): %s...\n", cfg.SecretSalt[:5])
 	fmt.Printf(" Server Timeouts: Read=%s, Write=%s, Idle=%s\n", cfg.ReadTimeout, cfg.WriteTimeout, cfg.IdleTimeout)
 	fmt.Printf(" Shutdown Timeout: %s\n", cfg.ShutdownTimeout)
+	fmt.Printf(" Path to log file: %s\n", cfg.LogFilePath)
 
 	//Initialize DataBase
 	db, err := database.InitDB(cfg.DatabasePath)
@@ -261,6 +281,8 @@ type Config struct {
 	IdleTimeout  string `yaml:"idle_timeout"`
 
 	ShutdownTimeout string `yaml:"shutdown_timeout"`
+
+	LogFilePath string `yaml:"log_file_path"`
 }
 
 func LoadConfig() (*Config, error) {
