@@ -177,3 +177,91 @@
 2025/06/05 13:03:09 main.go:508: Server shutdown gracefully
 2025/06/05 13:03:09 main.go:511: Application closed.
 2025/06/05 13:03:09 main.go:63: DataBAse connection closed.
+2025/06/05 13:30:31 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 13:30:31 db.go:52: Current DB schema version: 3
+2025/06/05 13:30:31 db.go:112: All DB migrations completed.
+2025/06/05 13:30:31 main.go:81: HTML-templates successfully loaded.
+2025/06/05 13:30:31 main.go:88: 
+--- Testing CRUD for users ---
+2025/06/05 13:30:31 main.go:90: Create user admin...
+2025/06/05 13:30:31 main.go:93: User 'admin' creation error: user insert error 'admin': UNIQUE constraint failed: users.username
+2025/06/05 13:30:31 main.go:98: Create user testuser...
+2025/06/05 13:30:31 main.go:103: User 'testuser' successfully created: &{6 testuser $2a$10$Jnlcgec9w87FCeCNaSy7yuj.2RnX1xzaECiHGRd3gGPPwwt5nI9n. {2025-06-05 13:30:31.8048977 +0300 EEST m=+0.269536801 true}}
+2025/06/05 13:30:31 main.go:106: Creating existing user 'admin', expecting to reveive error...
+2025/06/05 13:30:31 main.go:109: Success: Received expected error during user creation: user insert error 'admin': UNIQUE constraint failed: users.username
+2025/06/05 13:30:31 main.go:114: Search for user 'admin'...
+2025/06/05 13:30:31 main.go:119: Found user 'admin': &{ID:1 Username:admin PasswordHash:$2a$10$YZ9jMh4lYYjXSZWpm72dn.bQ82RubX9fXZJG4JZjNQaZ3KlZgBJv2 CreatedAt:{Time:2025-06-03 15:29:16.173 +0000 UTC Valid:true}}
+2025/06/05 13:30:31 main.go:122: Search for nonexistent user....
+2025/06/05 13:30:31 main.go:125: Success: Received expected error during nonexistent user search: user 'nonexistent' not found
+2025/06/05 13:30:31 main.go:130: User 'admin' authentication with right password...
+2025/06/05 13:30:32 main.go:135: User 'admin' authentication successfull: &{ID:1 Username:admin PasswordHash:$2a$10$YZ9jMh4lYYjXSZWpm72dn.bQ82RubX9fXZJG4JZjNQaZ3KlZgBJv2 CreatedAt:{Time:2025-06-03 15:29:16.173 +0000 UTC Valid:true}}
+2025/06/05 13:30:32 main.go:138: User 'admin' authentication with wrong password, expected error...
+2025/06/05 13:30:32 main.go:141: Successfull: Received expected authentication error for 'admin' with wrong password: wrong password for user 'admin'
+2025/06/05 13:30:32 main.go:147: Update password for user 'testuser'...
+2025/06/05 13:30:32 main.go:152: Password for 'testuser' successfully updated. New hash: $2a$1...
+2025/06/05 13:30:32 main.go:157: Authentication successfull for 'testuser' with new password.
+2025/06/05 13:30:32 main.go:162: Get All users...
+2025/06/05 13:30:32 main.go:167: Found 2 users:
+2025/06/05 13:30:32 main.go:173:  - ID: 1, Username: admin, CreatedAt: 2025-06-03 15:29:16
+2025/06/05 13:30:32 main.go:173:  - ID: 6, Username: testuser, CreatedAt: 2025-06-05 13:30:31
+2025/06/05 13:30:32 main.go:178: Delet user 'testuser' (ID: 6)...
+2025/06/05 13:30:32 main.go:183: User 'testuser' was deleted successfully.
+2025/06/05 13:30:32 main.go:187: Check 'testuser' was deleted...
+2025/06/05 13:30:32 main.go:190: Success: User 'testuser' not found after deleting.
+2025/06/05 13:30:32 main.go:197: ---End of CRUD testing for user---
+2025/06/05 13:30:32 main.go:205: 
+--- Testing CRUD for backup tasks ---
+2025/06/05 13:30:32 main.go:207: Creates backup task 'Daily Documents backup'...
+2025/06/05 13:30:32 main.go:210: Error creating task 'Daily Documents Backup': backup job insert error 'Daily Document Backup': UNIQUE constraint failed: backup_jobs.name
+2025/06/05 13:30:32 main.go:225: Creates backup task 'Weekly Photos Backup'...
+2025/06/05 13:30:32 main.go:238: Backup task 'Weekly Photos Backup' successfully created: ID: 4, Name: Weekly Photos Backup, Schedule: weekly, Created: 2025-06-05 13:30:32.488, Updated: 2025-06-05 13:30:32.488
+2025/06/05 13:30:32 main.go:244: Trying to create backup task 'Daily Documents backup' which exists
+2025/06/05 13:30:32 main.go:247: Success: got expected error during existing task creating: backup job insert error 'Daily Document Backup': UNIQUE constraint failed: backup_jobs.name
+2025/06/05 13:30:32 main.go:312: Get all backup tasks...
+2025/06/05 13:30:32 main.go:317: Found 2 backup tasks:
+2025/06/05 13:30:32 main.go:327:  - ID: 1, Name: Daily Document Backup, Active: false, Created: 2025-06-04 15:35:50.006, Updated: 2025-06-04 15:35:50.123
+2025/06/05 13:30:32 main.go:327:  - ID: 4, Name: Weekly Photos Backup, Active: true, Created: 2025-06-05 13:30:32.488, Updated: 2025-06-05 13:30:32.488
+2025/06/05 13:30:32 main.go:334: Deleting task 'Weekly Photos Backup' (ID: 4)...
+2025/06/05 13:30:32 main.go:340: Task 'Weekly Photos Backup' successfully deleted.
+2025/06/05 13:30:32 main.go:343: Check that 'Weekly Photos Backup' was deleted...
+2025/06/05 13:30:32 main.go:346: Success: task 'Weekly Photos Backup' not found after deleting
+2025/06/05 13:30:32 main.go:353: --- end of testing CRUD for tasks ---
+2025/06/05 13:30:32 main.go:361: Backup try: E:\test.txt -> E:\BackupData\test_backup\test.txt
+2025/06/05 13:30:32 local.go:49: File successfully copy: 'E:\test.txt' -> 'E:\BackupData\test_backup\test.txt' (24 bytes)
+2025/06/05 13:30:32 main.go:366: Local backup successfully completed for test file.
+2025/06/05 13:30:32 main.go:373: 
+--- Test exetended backup logic ---
+2025/06/05 13:30:33 main.go:386: Test directories prepared: E:BackupTest_Source
+2025/06/05 13:30:33 main.go:388: 
+--- First launch CopyDir (full backup) ---
+2025/06/05 13:30:33 main.go:396: First backup completed successfully. Copied files: 3, Size: 50 bytes
+2025/06/05 13:30:33 main.go:398: Time of first backup: 129.762ms
+2025/06/05 13:30:33 main.go:400: 
+--- Second launch CopyDir (expecting file skipping) ----
+2025/06/05 13:30:33 main.go:408: Second backup completed successfully. Copied files: 0, Sizee: 0 bytes
+2025/06/05 13:30:33 main.go:410: Success: no one file was copied, as expected (optimization work)
+2025/06/05 13:30:33 main.go:415: Second launch execution time: 724.2µs
+2025/06/05 13:30:33 main.go:417: 
+--- Change file in source folder and third launch of backup ---
+2025/06/05 13:30:33 main.go:421: Changed file: E:BackupTest_Source\file1.txt
+2025/06/05 13:30:34 main.go:431: Third backup successfully completed. Copied files: 1, Size: 32 bytes
+2025/06/05 13:30:34 main.go:433: Success: Copied exact 1 file, as expected (update changed file).
+2025/06/05 13:30:34 main.go:438: Third backup execution time: 5.6689ms
+2025/06/05 13:30:34 main.go:440: 
+--- Testing GetDirSize ---
+2025/06/05 13:30:34 main.go:445: Zise of source directory 'E:BackupTest_Source' is: 67 bytes
+2025/06/05 13:30:34 main.go:452: Zise of destination directory 'E:\BackupData\BackupTest_Dest' is: 67 bytes
+2025/06/05 13:30:34 main.go:514: Web Server launch on :8080...
+2025/06/05 13:55:24 main.go:527: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 13:55:24 main.go:538: Server shutdown gracefully
+2025/06/05 13:55:24 main.go:541: Application closed.
+2025/06/05 13:55:24 main.go:66: DataBAse connection closed.
+2025/06/05 13:55:40 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 13:55:40 db.go:52: Current DB schema version: 3
+2025/06/05 13:55:40 db.go:112: All DB migrations completed.
+2025/06/05 13:55:40 main.go:81: HTML-templates successfully loaded.
+2025/06/05 13:55:40 main.go:149: Web Server launch on :8080...
+2025/06/05 13:57:58 main.go:162: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 13:57:58 main.go:173: Server shutdown gracefully
+2025/06/05 13:57:58 main.go:176: Application closed.
+2025/06/05 13:57:58 main.go:66: DataBAse connection closed.

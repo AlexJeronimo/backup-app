@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup Application</title>
+    <script src="/static/htmx.min.js"></script>
+    <style>
+        /* Дуже простий CSS для початку */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+        }
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Backup Management Application</h1>
+            <nav>
+                <a href="/">Main</a>
+                <a href="/jobs">Backup tasks</a>
+                </nav>
+        </header>
+        <hr>
+        <main>
+            {{ template "content" . }}
+        </main>
+        <hr>
+        <footer>
+            <p>&copy; 2025 Oleksandr Pidhurskyi</p>
+        </footer>
+    </div>
+</body>
+</html>
