@@ -2,6 +2,44 @@
     <h2>Вітаємо в додатку для керування бекапами!</h2>
     <p>Тут ви можете керувати своїми завданнями бекапу, переглядати їхній статус та багато іншого.</p>
 
+    <h3>Активні Завдання Бекапу</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Джерело</th>
+                <th>Призначення</th>
+                <th>Розклад</th>
+                <th>Активне</th>
+                <th>Створено</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .Jobs }}
+            <tr>
+                <td>{{ .ID }}</td>
+                <td>{{ .Name }}</td>
+                <td>{{ .SourcePath }}</td>
+                <td>{{ .DestinationPath }}</td>
+                <td>{{ .Schedule }}</td>
+                <td>
+                    {{ if .IsActive }}
+                        <span class="status-active">Так</span>
+                    {{ else }}
+                        <span class="status-inactive">Ні</span>
+                    {{ end }}
+                </td>
+                <td>{{ .CreatedAt.Time.Format "2006-01-02 15:04:05" }}</td>
+            </tr>
+            {{ else }}
+            <tr>
+                <td colspan="7">Наразі немає завдань бекапу.</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+
     <h3>Тестова інтеграція HTMX</h3>
     <button hx-get="/hello" hx-swap="outerHTML" hx-target="#htmx-target">Завантажити вітання</button>
     <div id="htmx-target">

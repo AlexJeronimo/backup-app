@@ -6,14 +6,14 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 	"time"
 )
 
 type WebHandlers struct {
 	Templates *template.Template
-
-	UserRepo *database.UserRepo
-	JobRepo  *database.JobRepo
+	UserRepo  *database.UserRepo
+	JobRepo   *database.JobRepo
 }
 
 func NewWebHandlers(tmpl *template.Template, userRepo *database.UserRepo, jobRepo *database.JobRepo) *WebHandlers {
@@ -30,10 +30,111 @@ func (wh *WebHandlers) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := wh.Templates.ExecuteTemplate(w, "layout.html", nil); err != nil {
+	tmpl, err := wh.Templates.Clone()
+	if err != nil {
+		log.Printf("Template clone error: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl, err = tmpl.ParseFiles(filepath.Join("web", "templates", "home.html"))
+	if err != nil {
+		log.Printf("Error parsing home.html: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	jobs, err := wh.JobRepo.GetAllJobs()
+	if err != nil {
+		log.Printf("Error getting backup tasks: %v", err)
+		http.Error(w, "Problem with getting backup tasks", http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Jobs []database.BackupJob
+	}{
+		Jobs: jobs,
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "layout.html", data); err != nil {
 		log.Printf("Error rendering home.html: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
+}
+
+func (wh *WebHandlers) CreateJobFormHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	tmpl, err := wh.Templates.Clone()
+	if err != nil {
+		log.Printf("Template clone error: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl, err = tmpl.ParseFiles(filepath.Join("web", "templates", "create_job.html"))
+	if err != nil {
+		log.Printf("Error parsing create_job.html: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "layout.html", nil); err != nil {
+		log.Printf("Error rendering create_job.html: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func (wh *WebHandlers) CreateJobHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method ot allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		log.Printf("Error form parsing: %v", err)
+		http.Error(w, "Form parsing error", http.StatusBadRequest)
+		return
+	}
+
+	name := r.FormValue("name")
+	sourcePath := r.FormValue("source_path")
+	destinationPath := r.FormValue("destination_path")
+	schedule := r.FormValue("schedule")
+	isActiveStr := r.FormValue("is_active")
+
+	isActive := (isActiveStr == "true")
+
+	if name == "" || sourcePath == "" || destinationPath == "" || schedule == "" {
+		log.Println("Not all fields filled with necessary info.")
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, `<div class="message error">Error: please fill all necessary fields.</div>`)
+		return
+	}
+
+	_, err := wh.JobRepo.CreateJob(name, sourcePath, destinationPath, schedule, isActive)
+	if err != nil {
+		log.Printf("Error creating backup task in DB: %v", err)
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusInternalServerError)
+		if database.IsUniqueConstraintError(err) {
+			fmt.Fprintf(w, `<div class="message error">Error: Task with this name or paths is exists.</div>`)
+		} else {
+			fmt.Fprintf(w, `<div class="message error"> Error creating task: %v</div>`, err)
+		}
+		return
+	}
+
+	log.Printf("Successfully created new backup task: %s", name)
+
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, `
+		<div class="message success"> Task "%s" successfully created!</div>
+		`, name)
 }
 
 func (wh *WebHandlers) JobsHandler(w http.ResponseWriter, r *http.Request) {

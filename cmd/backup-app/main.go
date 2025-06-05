@@ -70,11 +70,7 @@ func main() {
 
 	//--- Load HTML-templates ---
 
-	templates, err = template.ParseFiles(
-		filepath.Join("web", "templates", "layout.html"),
-		filepath.Join("web", "templates", "home.html"),
-		// another templates should be added here
-	)
+	templates, err = template.ParseFiles(filepath.Join("web", "templates", "layout.html"))
 	if err != nil {
 		log.Fatalf("Error loading HTML-templates: %v", err)
 	}
@@ -102,7 +98,10 @@ func main() {
 	mux.HandleFunc("/jobs", webHandlers.JobsHandler)
 	mux.HandleFunc("/hello", webHandlers.HelloHTMXHandler)
 
-	// sysingo Handlers
+	mux.HandleFunc("/jobs/new", webHandlers.CreateJobFormHandler)
+	mux.HandleFunc("POST /jobs/new", webHandlers.CreateJobHandler)
+
+	// sysinfo Handlers
 	mux.HandleFunc("/health", handlers.HealthHandler)
 	mux.HandleFunc("/status", handlers.StatusHandler)
 
@@ -167,7 +166,7 @@ func main() {
 
 		//Initialize gracefull shutdown
 		if err := srv.Shutdown(shutdownCtx); err != nil {
-			log.Printf("Gracefull shutdown error: %v", err)
+			log.Printf("Graceful shutdown error: %v", err)
 			os.Exit(1)
 		}
 		log.Println("Server shutdown gracefully")

@@ -1,0 +1,43 @@
+{{ define "content" }}
+    <h2>Редагувати Завдання Бекапу: {{ .Job.Name }}</h2>
+
+    <div id="form-messages">
+        </div>
+
+    <form hx-put="/jobs/edit/{{ .Job.ID }}" hx-target="#form-messages" hx-swap="innerHTML" hx-on::after-request="if(event.detail.xhr.status == 200) { event.target.reset(); window.location.href = '/'; }">
+        <input type="hidden" name="id" value="{{ .Job.ID }}"> <div class="form-group">
+            <label for="name">Назва Завдання:</label>
+            <input type="text" id="name" name="name" value="{{ .Job.Name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="source_path">Шлях до джерела:</label>
+            <input type="text" id="source_path" name="source_path" value="{{ .Job.SourcePath }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="destination_path">Шлях до призначення:</label>
+            <input type="text" id="destination_path" name="destination_path" value="{{ .Job.DestinationPath }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="schedule">Розклад:</label>
+            <select id="schedule" name="schedule" required>
+                <option value="manual" {{ if eq .Job.Schedule "manual" }}selected{{ end }}>Вручну</option>
+                <option value="daily" {{ if eq .Job.Schedule "daily" }}selected{{ end }}>Щоденно</option>
+                <option value="weekly" {{ if eq .Job.Schedule "weekly" }}selected{{ end }}>Щотижня</option>
+                <option value="monthly" {{ if eq .Job.Schedule "monthly" }}selected{{ end }}>Щомісяця</option>
+            </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="is_active" name="is_active" value="true" {{ if .Job.IsActive }}checked{{ end }}>
+            <label for="is_active">Активне завдання</label>
+        </div>
+
+        <button type="submit">Оновити Завдання</button>
+        <span id="form-spinner" class="htmx-indicator">Завантаження...</span>
+    </form>
+
+    <p><a href="/">Повернутися на головну</a></p>
+{{ end }}

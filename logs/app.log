@@ -265,3 +265,97 @@
 2025/06/05 13:57:58 main.go:173: Server shutdown gracefully
 2025/06/05 13:57:58 main.go:176: Application closed.
 2025/06/05 13:57:58 main.go:66: DataBAse connection closed.
+2025/06/05 14:04:38 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 14:04:38 db.go:52: Current DB schema version: 3
+2025/06/05 14:04:38 db.go:112: All DB migrations completed.
+2025/06/05 14:04:38 main.go:81: HTML-templates successfully loaded.
+2025/06/05 14:04:38 main.go:149: Web Server launch on :8080...
+2025/06/05 14:20:34 main.go:162: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 14:20:34 main.go:173: Server shutdown gracefully
+2025/06/05 14:20:34 main.go:176: Application closed.
+2025/06/05 14:20:34 main.go:66: DataBAse connection closed.
+2025/06/05 14:20:41 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 14:20:41 db.go:52: Current DB schema version: 3
+2025/06/05 14:20:41 db.go:112: All DB migrations completed.
+2025/06/05 14:20:41 main.go:81: HTML-templates successfully loaded.
+2025/06/05 14:20:41 main.go:92: Додаємо тестове завдання 'Daily Documents Backup'...
+2025/06/05 14:20:41 main.go:101: Додаємо тестове завдання 'Weekly Photos Backup'...
+2025/06/05 14:20:41 main.go:169: Web Server launch on :8080...
+2025/06/05 14:27:22 main.go:182: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 14:27:22 main.go:193: Server shutdown gracefully
+2025/06/05 14:27:22 main.go:196: Application closed.
+2025/06/05 14:27:22 main.go:66: DataBAse connection closed.
+2025/06/05 15:02:24 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 15:02:24 db.go:52: Current DB schema version: 3
+2025/06/05 15:02:24 db.go:112: All DB migrations completed.
+2025/06/05 15:02:24 main.go:82: HTML-templates successfully loaded.
+2025/06/05 15:02:24 main.go:66: DataBAse connection closed.
+2025/06/05 15:05:37 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 15:05:37 db.go:52: Current DB schema version: 3
+2025/06/05 15:05:37 db.go:112: All DB migrations completed.
+2025/06/05 15:05:37 main.go:82: HTML-templates successfully loaded.
+2025/06/05 15:05:37 main.go:153: Web Server launch on :8080...
+2025/06/05 15:12:09 main.go:166: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 15:12:09 main.go:177: Server shutdown gracefully
+2025/06/05 15:12:09 main.go:180: Application closed.
+2025/06/05 15:12:09 main.go:66: DataBAse connection closed.
+2025/06/05 15:12:14 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 15:12:14 db.go:52: Current DB schema version: 3
+2025/06/05 15:12:14 db.go:112: All DB migrations completed.
+2025/06/05 15:12:14 main.go:82: HTML-templates successfully loaded.
+2025/06/05 15:12:14 main.go:153: Web Server launch on :8080...
+2025/06/05 15:12:51 handlers.go:103: Successfully created new backup task: 1
+2025/06/05 15:37:32 main.go:166: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 15:37:32 main.go:177: Server shutdown gracefully
+2025/06/05 15:37:32 main.go:180: Application closed.
+2025/06/05 15:37:32 main.go:66: DataBAse connection closed.
+2025/06/05 15:37:38 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 15:37:38 db.go:52: Current DB schema version: 3
+2025/06/05 15:37:38 db.go:112: All DB migrations completed.
+2025/06/05 15:37:38 main.go:82: HTML-templates successfully loaded.
+2025/06/05 15:37:38 main.go:153: Web Server launch on :8080...
+2025/06/05 15:43:23 main.go:166: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 15:43:23 main.go:177: Server shutdown gracefully
+2025/06/05 15:43:24 main.go:180: Application closed.
+2025/06/05 15:43:24 main.go:66: DataBAse connection closed.
+2025/06/05 15:43:37 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 15:43:37 db.go:52: Current DB schema version: 3
+2025/06/05 15:43:37 db.go:112: All DB migrations completed.
+2025/06/05 15:43:37 main.go:82: HTML-templates successfully loaded.
+2025/06/05 15:43:37 main.go:153: Web Server launch on :8080...
+2025/06/05 15:54:01 main.go:166: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 15:54:01 main.go:177: Server shutdown gracefully
+2025/06/05 15:54:01 main.go:180: Application closed.
+2025/06/05 15:54:01 main.go:66: DataBAse connection closed.
+2025/06/05 15:54:06 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 15:54:06 db.go:52: Current DB schema version: 3
+2025/06/05 15:54:06 db.go:112: All DB migrations completed.
+2025/06/05 15:54:06 main.go:82: HTML-templates successfully loaded.
+2025/06/05 15:54:06 main.go:153: Web Server launch on :8080...
+2025/06/05 16:00:16 main.go:166: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 16:00:16 main.go:177: Server shutdown gracefully
+2025/06/05 16:00:16 main.go:180: Application closed.
+2025/06/05 16:00:16 main.go:66: DataBAse connection closed.
+2025/06/05 16:00:22 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 16:00:22 db.go:52: Current DB schema version: 3
+2025/06/05 16:00:22 db.go:112: All DB migrations completed.
+2025/06/05 16:00:22 main.go:80: Error loading HTML-templates: template: layout.html:23: unexpected ".TemplateN"... in template clause
+2025/06/05 16:30:33 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 16:30:33 db.go:52: Current DB schema version: 3
+2025/06/05 16:30:33 db.go:112: All DB migrations completed.
+2025/06/05 16:30:33 main.go:77: HTML-templates successfully loaded.
+2025/06/05 16:30:33 main.go:148: Web Server launch on :8080...
+2025/06/05 16:45:07 main.go:161: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 16:45:07 main.go:172: Server shutdown gracefully
+2025/06/05 16:45:07 main.go:175: Application closed.
+2025/06/05 16:45:07 main.go:66: DataBAse connection closed.
+2025/06/05 16:45:12 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/05 16:45:12 db.go:52: Current DB schema version: 3
+2025/06/05 16:45:12 db.go:112: All DB migrations completed.
+2025/06/05 16:45:12 main.go:77: HTML-templates successfully loaded.
+2025/06/05 16:45:12 main.go:148: Web Server launch on :8080...
+2025/06/05 16:45:24 handlers.go:131: Successfully created new backup task: 2
+2025/06/05 16:58:07 main.go:161: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/05 16:58:07 main.go:172: Server shutdown gracefully
+2025/06/05 16:58:07 main.go:175: Application closed.
+2025/06/05 16:58:07 main.go:66: DataBAse connection closed.
