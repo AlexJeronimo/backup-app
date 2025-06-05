@@ -350,6 +350,92 @@ func main() {
 
 	//--- End of Backup Test ---
 
+	//---Extended backup test ----
+
+	log.Println("\n--- Test exetended backup logic ---")
+
+	testSourceDir := filepath.Join("E:", "BackupTest_Source")
+	testDestDir := filepath.Join(cfg.BackupDir, "BackupTest_Dest")
+
+	os.RemoveAll(testSourceDir) //delete old if exist
+	os.RemoveAll(testDestDir)   //delete old if exist
+	os.MkdirAll(filepath.Join(testSourceDir, "sub1"), 0755)
+	os.MkdirAll(filepath.Join(testSourceDir, "sub2"), 0755)
+	os.WriteFile(filepath.Join(testSourceDir, "file1.txt"), []byte("This is file 1."), 0644)
+	os.WriteFile(filepath.Join(testSourceDir, "sub1", "file2.txt"), []byte("This is file 2 in sub1."), 0644)
+	os.WriteFile(filepath.Join(testSourceDir, "sub2", "file3.log"), []byte("LOg content."), 0644)
+
+	log.Printf("Test directories prepared: %s", testSourceDir)
+
+	log.Println("\n--- First launch CopyDir (full backup) ---")
+	var totalCopiedFiles int
+	var totalCopiedBytes int64
+	backupStartTime := time.Now()
+	err = backup.CopyDir(testSourceDir, testDestDir, &totalCopiedFiles, &totalCopiedBytes)
+	if err != nil {
+		log.Printf("Error during first backup launch: %v", err)
+	} else {
+		log.Printf("First backup completed successfully. Copied files: %d, Size: %d bytes", totalCopiedFiles, totalCopiedBytes) //TODO: convert bytes to megabytes/gigabytes/... get it from size and apply automatically
+	}
+	log.Printf("Time of first backup: %s", time.Since(backupStartTime))
+
+	log.Println("\n--- Second launch CopyDir (expecting file skipping) ----")
+	var totalCopiedFiles2 int
+	var totalCopiedBytes2 int64
+	backupStartTime = time.Now()
+	err = backup.CopyDir(testSourceDir, testDestDir, &totalCopiedFiles2, &totalCopiedBytes2)
+	if err != nil {
+		log.Printf("Error during second backup launch: %v", err)
+	} else {
+		log.Printf("Second backup completed successfully. Copied files: %d, Sizee: %d bytes", totalCopiedFiles2, totalCopiedBytes2)
+		if totalCopiedFiles2 == 0 && totalCopiedBytes2 == 0 {
+			log.Println("Success: no one file was copied, as expected (optimization work)")
+		} else {
+			log.Println("Error: Was copied files during second launch, although were no any changes.")
+		}
+	}
+	log.Printf("Second launch execution time: %s", time.Since(backupStartTime))
+
+	log.Println("\n--- Change file in source folder and third launch of backup ---")
+	modifiedFilePath := filepath.Join(testSourceDir, "file1.txt")
+	os.WriteFile(modifiedFilePath, []byte("This is file 1, updated content!"), 0644)
+
+	log.Printf("Changed file: %s", modifiedFilePath)
+	time.Sleep(1 * time.Second)
+
+	var totalCopiedFiles3 int
+	var totalCopiedBytes3 int64
+	backupStartTime = time.Now()
+	err = backup.CopyDir(testSourceDir, testDestDir, &totalCopiedFiles3, &totalCopiedBytes3)
+	if err != nil {
+		log.Printf("Error during third backup launch: %v", err)
+	} else {
+		log.Printf("Third backup successfully completed. Copied files: %d, Size: %d bytes", totalCopiedFiles3, totalCopiedBytes3)
+		if totalCopiedFiles3 == 1 {
+			log.Println("Success: Copied exact 1 file, as expected (update changed file).")
+		} else {
+			log.Printf("Error: Copied %d files, expected 1", totalCopiedFiles3)
+		}
+	}
+	log.Printf("Third backup execution time: %s", time.Since(backupStartTime))
+
+	log.Println("\n--- Testing GetDirSize ---")
+	sourceSize, err := backup.GetDirSIze(testSourceDir)
+	if err != nil {
+		log.Printf("Error during getting size of source directory: %v", err)
+	} else {
+		log.Printf("Zise of source directory '%s' is: %d bytes", testSourceDir, sourceSize)
+	}
+
+	destSize, err := backup.GetDirSIze(testDestDir)
+	if err != nil {
+		log.Printf("Error during getting size of destination directory: %v", err)
+	} else {
+		log.Printf("Zise of destination directory '%s' is: %d bytes", testDestDir, destSize)
+	}
+
+	//--- End of Extended backup test
+
 	//Own multiplexor creating (router)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", healthHandler)
