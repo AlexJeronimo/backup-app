@@ -2,7 +2,7 @@ Backup application for windows system
 
 
 Backup methods:
-1. Lockal backup #in progress
+1. Local backup #in progress
 2. S3 backup #will be realized in feature
 3. SMB\CIFS backup #will be realized in feature
 
