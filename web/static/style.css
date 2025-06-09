@@ -279,3 +279,61 @@ button[type="submit"]:hover {
 .delete-button:hover {
     background-color: #c82333;
 }
+
+.run-button {
+    background-color: #17a2b8; /* Cyan for run */
+    color: white;
+    border: 1px solid #17a2b8;
+    margin-left: 5px;
+}
+
+.run-button:hover {
+    background-color: #138496;
+}
+
+/* Styles for status indicators */
+.status-indicator {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85em;
+    min-width: 80px; /* Забезпечує мінімальну ширину для вирівнювання */
+    text-align: center;
+}
+
+.status-success {
+    background-color: #d4edda;
+    color: #28a745;
+    border: 1px solid #c3e6cb;
+}
+
+.status-error {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border: 1px solid #f5c6cb;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #ffc107;
+    border: 1px solid #ffeeba;
+}
+
+.status-info {
+    background-color: #e2e3e5;
+    color: #6c757d;
+    border: 1px solid #d6d8db;
+}
+
+/* HTMX indicator specific for job status */
+.htmx-indicator.job-status-spinner { /* Можете використовувати цей клас, якщо хочете окремий індикатор */
+    display: none;
+    margin-left: 5px;
+    font-style: italic;
+    color: #6c757d;
+}
+
+.htmx-request .htmx-indicator.job-status-spinner {
+    display: inline-block;
+}

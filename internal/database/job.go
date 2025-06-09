@@ -7,14 +7,16 @@ import (
 )
 
 type BackupJob struct {
-	ID              int          `json:"id" db:"id"`
-	Name            string       `json:"name" db:"name"`
-	SourcePath      string       `json:"source_path" db:"source_path"`
-	DestinationPath string       `json:"destination_path" db:"destination_path"`
-	Schedule        string       `json:"schedule" db:"schedule"`
-	IsActive        bool         `json:"is_active" db:"is_active"`
-	CreatedAt       sql.NullTime `json:"created_at" db:"created_at"`
-	UpdatedAt       sql.NullTime `json:"updated_at" db:"updated_at"`
+	ID              int            `json:"id" db:"id"`
+	Name            string         `json:"name" db:"name"`
+	SourcePath      string         `json:"source_path" db:"source_path"`
+	DestinationPath string         `json:"destination_path" db:"destination_path"`
+	Schedule        string         `json:"schedule" db:"schedule"`
+	IsActive        bool           `json:"is_active" db:"is_active"`
+	CreatedAt       sql.NullTime   `json:"created_at" db:"created_at"`
+	UpdatedAt       sql.NullTime   `json:"updated_at" db:"updated_at"`
+	LastRunStatus   sql.NullString `json:"last_run_status" db:"last_run_status"`
+	LastRunTime     sql.NullTime   `json:"last_run_time" db:"last_run_time"`
 }
 
 type JobRepo struct {
@@ -27,11 +29,13 @@ func NewJobRepo(db *sql.DB) *JobRepo {
 
 func (r *JobRepo) CreateJob(name, sourcePath, destinationPath, schedule string, isActive bool) (*BackupJob, error) {
 	now := time.Now()
-	query := `INSERT INTO backup_jobs (name, source_path, destination_path, schedule, is_active, created_at, updated_at)
-				VALUES (?, ?, ?, ?, ?, ?, ?);`
+	query := `INSERT INTO backup_jobs (name, source_path, destination_path, schedule, is_active, created_at, updated_at,
+				last_run_status, last_run_time)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`
 	result, err := r.db.Exec(query, name, sourcePath, destinationPath, schedule, isActive,
 		sql.NullTime{Time: now, Valid: true}.Time.Format(time.RFC3339Nano),
-		sql.NullTime{Time: now, Valid: true}.Time.Format(time.RFC3339Nano))
+		sql.NullTime{Time: now, Valid: true}.Time.Format(time.RFC3339Nano),
+		sql.NullString{}, sql.NullTime{})
 	if err != nil {
 		return nil, fmt.Errorf("backup job insert error '%s': %w", name, err)
 	}
@@ -41,7 +45,7 @@ func (r *JobRepo) CreateJob(name, sourcePath, destinationPath, schedule string, 
 		return nil, fmt.Errorf("getting ID of new backup task error: %w", err)
 	}
 
-	return &BackupJob{
+	/* return &BackupJob{
 		ID:              int(id),
 		Name:            name,
 		SourcePath:      sourcePath,
@@ -50,18 +54,22 @@ func (r *JobRepo) CreateJob(name, sourcePath, destinationPath, schedule string, 
 		IsActive:        isActive,
 		CreatedAt:       sql.NullTime{Time: now, Valid: true},
 		UpdatedAt:       sql.NullTime{Time: now, Valid: true},
-	}, nil
+	}, nil */
+	return r.GetJobByID((int(id)))
 
 }
 
 func (r *JobRepo) GetJobByID(id int) (*BackupJob, error) {
 	var job BackupJob
 	var createdAtStr, updatedAtStr string
-	query := `SELECT id, name, source_path, destination_path, schedule, is_active, created_at, updated_at
+	var lastRunStatus sql.NullString
+	var LastRunTime sql.NullTime
+	query := `SELECT id, name, source_path, destination_path, schedule, is_active, created_at, updated_at,
+			last_run_status, last_run_time
 			FROM backup_jobs WHERE id = ?;`
 	row := r.db.QueryRow(query, id)
 
-	err := row.Scan(&job.ID, &job.Name, &job.SourcePath, &job.DestinationPath, &job.Schedule, &job.IsActive, &createdAtStr, &updatedAtStr)
+	err := row.Scan(&job.ID, &job.Name, &job.SourcePath, &job.DestinationPath, &job.Schedule, &job.IsActive, &createdAtStr, &updatedAtStr, &lastRunStatus, &LastRunTime)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("backup task with ID %d not found", id)
@@ -81,17 +89,22 @@ func (r *JobRepo) GetJobByID(id int) (*BackupJob, error) {
 	}
 	job.UpdatedAt = sql.NullTime{Time: parseUpdatedAt, Valid: true}
 
+	job.LastRunStatus = lastRunStatus
+	job.LastRunTime = LastRunTime
+
 	return &job, nil
 }
 
 func (r *JobRepo) GetJobByName(name string) (*BackupJob, error) {
 	var job BackupJob
 	var createdAtStr, updatedAtStr string
-	query := `SELECT id, name, source_path, destination_path, schedule, is_active, created_at, updated_at
+	var lastRunStatus sql.NullString
+	var lastRunTime sql.NullTime
+	query := `SELECT id, name, source_path, destination_path, schedule, is_active, created_at, updated_at. last_run_status, last_run_time
 			FROM backup_jobs WHERE name = ?;`
 	row := r.db.QueryRow(query, name)
 
-	err := row.Scan(&job.ID, &job.Name, &job.SourcePath, &job.DestinationPath, &job.Schedule, &job.IsActive, &createdAtStr, &updatedAtStr)
+	err := row.Scan(&job.ID, &job.Name, &job.SourcePath, &job.DestinationPath, &job.Schedule, &job.IsActive, &createdAtStr, &updatedAtStr, &lastRunStatus, &lastRunTime)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("backup task with '%s' not found", name)
@@ -110,6 +123,9 @@ func (r *JobRepo) GetJobByName(name string) (*BackupJob, error) {
 		return nil, fmt.Errorf("error parsing updated_at for task '%s': %w", name, err)
 	}
 	job.UpdatedAt = sql.NullTime{Time: parseUpdatedAt, Valid: true}
+
+	job.LastRunStatus = lastRunStatus
+	job.LastRunTime = lastRunTime
 
 	return &job, nil
 }
@@ -178,7 +194,8 @@ func (r *JobRepo) DeleteJob(id int) error {
 }
 
 func (r *JobRepo) GetAllJobs() ([]BackupJob, error) {
-	query := `SELECT id, name, source_path, destination_path, schedule, is_active, created_at, updated_at FROM backup_jobs;`
+	query := `SELECT id, name, source_path, destination_path, schedule, is_active, created_at, updated_at, last_run_status, last_run_time 
+	FROM backup_jobs;`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("erro getting all bakup jobs: %w", err)
@@ -189,8 +206,10 @@ func (r *JobRepo) GetAllJobs() ([]BackupJob, error) {
 	for rows.Next() {
 		var job BackupJob
 		var createdAtStr, updatedAtStr string
+		var lastRunStatus sql.NullString
+		var lastRunTime sql.NullTime
 		if err := rows.Scan(&job.ID, &job.Name, &job.SourcePath, &job.DestinationPath,
-			&job.Schedule, &job.IsActive, &createdAtStr, &updatedAtStr); err != nil {
+			&job.Schedule, &job.IsActive, &createdAtStr, &updatedAtStr, &lastRunStatus, &lastRunTime); err != nil {
 			return nil, fmt.Errorf("erro scaning row of backup task: %w", err)
 		}
 
@@ -206,6 +225,9 @@ func (r *JobRepo) GetAllJobs() ([]BackupJob, error) {
 		}
 		job.UpdatedAt = sql.NullTime{Time: parsedUpdatedAt, Valid: true}
 
+		job.LastRunStatus = lastRunStatus
+		job.LastRunTime = lastRunTime
+
 		jobs = append(jobs, job)
 	}
 
@@ -214,4 +236,23 @@ func (r *JobRepo) GetAllJobs() ([]BackupJob, error) {
 	}
 
 	return jobs, nil
+}
+
+func (r *JobRepo) UpdateJobStatusAndLastRun(id int, status string, runTime time.Time) error {
+	stmt, err := r.db.Prepare(`
+    		UPDATE backup_jobs
+    		SET last_run_status = ?, last_run_time = ?, updated_at = ?
+    		WHERE id = ?;
+    	`)
+	if err != nil {
+		return fmt.Errorf("error preparing request UpdateJobStatusAndLastRun: %w", err)
+	}
+	defer stmt.Close()
+
+	updatedAt := time.Now()
+	_, err = stmt.Exec(status, runTime, updatedAt, id)
+	if err != nil {
+		return fmt.Errorf("error executing request UpdateJobStatusAndLastRun: %w", err)
+	}
+	return nil
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backup-app/internal/backup"
 	"backup-app/internal/database"
 	"fmt"
 	"html/template"
@@ -304,4 +305,51 @@ func (wh *WebHandlers) DeleteJobHandler(w http.ResponseWriter, r *http.Request) 
 
 	log.Printf("DeleteJobHandler: Successfully deleted backup task with ID: %d", jobID)
 	w.WriteHeader(http.StatusOK)
+}
+
+func (wh *WebHandlers) RunBackupHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("RunBackupHandler: Received POST request.")
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	idStr := r.PathValue("id")
+	jobID, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Printf("RunBackupHandler: Invalid job ID in URL: %v", err)
+		http.Error(w, "Incorrect ID task", http.StatusBadRequest)
+		return
+	}
+
+	job, err := wh.JobRepo.GetJobByID(jobID)
+	if err != nil {
+		log.Printf("RunBackupHandler: Error getting job by ID %d: %v", jobID, err)
+		if err.Error() == fmt.Sprintf("task with ID %d not found", jobID) {
+			http.NotFound(w, r)
+		} else {
+			http.Error(w, "Can't load task for backup", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	go func() {
+		log.Printf("Starting asynchronous backup for job ID %d: %s", job.ID, job.Name)
+		result := backup.PerformLocalBackup(job.ID, job.SourcePath, job.DestinationPath)
+
+		err := wh.JobRepo.UpdateJobStatusAndLastRun(result.JobID, result.Status, result.Time)
+		if err != nil {
+			log.Printf("Failed to update job status for ID %d: %v", result.JobID, err)
+		} else {
+			log.Printf("Job ID %d status updated to '%s' (Duration: %s)", result.JobID, result.Status, result.Duration.String())
+		}
+	}()
+
+	log.Printf("RunBackupHandler: Backup initiated for job ID %d. Sending success response.", jobID)
+
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, `<div class="status-indicator" id="job-status-%d">
+                       <span class="status-pending">Backup started...</span>
+                     </div>`, jobID)
 }

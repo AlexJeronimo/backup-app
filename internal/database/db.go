@@ -69,8 +69,10 @@ func runMigrations(db *sql.DB) error {
 				destination_path TEXT NOT NULL,
 				schedule TEXT NOT NULL,
 				is_active BOOLEAN NOT NULL DEFAULT 1,
-				created_at TEXT DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'now', 'localtime')),
-				updated_at TEXT DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'now', 'localtime'))	
+				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+				updated_at DATETIME,
+				last_run_status TEXT,
+				last_run_time DATETIME	
 			);
 			CREATE INDEX idx_backup_jobs_name ON backup_jobs(name);
 		`,

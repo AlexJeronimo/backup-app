@@ -508,3 +508,45 @@
 2025/06/09 13:35:00 main.go:182: Server shutdown gracefully
 2025/06/09 13:35:00 main.go:185: Application closed.
 2025/06/09 13:35:00 main.go:71: DataBAse connection closed.
+2025/06/09 14:26:18 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 14:26:18 db.go:52: Current DB schema version: 0
+2025/06/09 14:26:18 db.go:100: Do migration for version 1...
+2025/06/09 14:26:18 db.go:111: Migration for version 1 compleetd successfully.
+2025/06/09 14:26:18 db.go:100: Do migration for version 2...
+2025/06/09 14:26:18 db.go:111: Migration for version 2 compleetd successfully.
+2025/06/09 14:26:18 db.go:100: Do migration for version 3...
+2025/06/09 14:26:18 db.go:111: Migration for version 3 compleetd successfully.
+2025/06/09 14:26:18 db.go:114: All DB migrations completed.
+2025/06/09 14:26:18 main.go:82: HTML-templates successfully loaded.
+2025/06/09 14:26:18 main.go:160: Web Server launch on :8080...
+2025/06/09 14:27:26 handlers.go:122: Error creating backup task in DB: backup job insert error 'test': table backup_jobs has no column named lasr_run_status
+2025/06/09 14:28:04 main.go:173: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 14:28:04 main.go:184: Server shutdown gracefully
+2025/06/09 14:28:04 main.go:187: Application closed.
+2025/06/09 14:28:04 main.go:71: DataBAse connection closed.
+2025/06/09 14:28:14 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 14:28:14 db.go:52: Current DB schema version: 3
+2025/06/09 14:28:14 db.go:114: All DB migrations completed.
+2025/06/09 14:28:14 main.go:82: HTML-templates successfully loaded.
+2025/06/09 14:28:14 main.go:160: Web Server launch on :8080...
+2025/06/09 14:28:17 handlers.go:133: Successfully created new backup task: test
+2025/06/09 14:28:39 handlers.go:311: RunBackupHandler: Received POST request.
+2025/06/09 14:28:39 handlers.go:348: RunBackupHandler: Backup initiated for job ID 1. Sending success response.
+2025/06/09 14:28:39 handlers.go:337: Starting asynchronous backup for job ID 1: test
+2025/06/09 14:28:39 backup.go:27: Starting backup for job ID 1 from 'C:\Users\user\Documents' to 'E:\BackupData\Documents'
+2025/06/09 14:28:39 backup.go:77: Backup error for job ID 1: Error during backup: can't open source file C:\Users\user\Documents\My Music: open C:\Users\user\Documents\My Music: Access is denied.
+2025/06/09 14:28:39 handlers.go:344: Job ID 1 status updated to 'Error' (Duration: 169.5051ms)
+2025/06/09 14:29:54 handlers.go:213: EditJobFormHandler: Successfully rendered edit form for job ID 1.
+2025/06/09 14:30:37 handlers.go:217: UpdateJobHandler: Received PUT request.
+2025/06/09 14:30:37 handlers.go:249: UpdateJobHandler: Job ID 1, Form values - Name: test, Source: E:\BackupTest_Source, Dest: E:\BackupData\1, Schedule: manual, Active: true
+2025/06/09 14:30:37 handlers.go:274: UpdateJobHandler: Successfully updated backup task: test (ID: 1)
+2025/06/09 14:30:45 handlers.go:311: RunBackupHandler: Received POST request.
+2025/06/09 14:30:45 handlers.go:348: RunBackupHandler: Backup initiated for job ID 1. Sending success response.
+2025/06/09 14:30:45 handlers.go:337: Starting asynchronous backup for job ID 1: test
+2025/06/09 14:30:45 backup.go:27: Starting backup for job ID 1 from 'E:\BackupTest_Source' to 'E:\BackupData\1'
+2025/06/09 14:30:56 backup.go:81: Backup for job ID 1 completed successfully.
+2025/06/09 14:30:56 handlers.go:344: Job ID 1 status updated to 'Success' (Duration: 10.7531588s)
+2025/06/09 14:31:35 main.go:173: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 14:31:35 main.go:184: Server shutdown gracefully
+2025/06/09 14:31:35 main.go:187: Application closed.
+2025/06/09 14:31:35 main.go:71: DataBAse connection closed.

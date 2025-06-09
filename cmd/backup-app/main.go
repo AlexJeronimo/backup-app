@@ -111,6 +111,8 @@ func main() {
 
 	mux.HandleFunc("DELETE /jobs/delete/{id}", webHandlers.DeleteJobHandler)
 
+	mux.HandleFunc("POST /jobs/run/{id}", webHandlers.RunBackupHandler)
+
 	// sysinfo Handlers
 	mux.HandleFunc("/health", handlers.HealthHandler)
 	mux.HandleFunc("/status", handlers.StatusHandler)

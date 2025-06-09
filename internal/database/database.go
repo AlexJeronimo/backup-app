@@ -3,7 +3,6 @@ package database
 import "database/sql"
 
 func IsUniqueConstraintError(err error) bool {
-	// Якщо помилка sql.ErrNoRows, це не помилка унікальності
 	if err == sql.ErrNoRows {
 		return false
 	}

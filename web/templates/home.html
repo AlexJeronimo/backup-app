@@ -14,12 +14,13 @@
                 <th>Активне</th>
                 <th>Створено</th>
                 <th>Оновлено</th>
-                <th>Дії</th>
+                <th>Останній запуск</th> <th>Статус</th>       <th>Дії</th>
             </tr>
         </thead>
         <tbody>
             {{ range .Jobs }}
-            <tr id="job-{{ .ID }}"> <td>{{ .ID }}</td>
+            <tr id="job-{{ .ID }}">
+                <td>{{ .ID }}</td>
                 <td>{{ .Name }}</td>
                 <td>{{ .SourcePath }}</td>
                 <td>{{ .DestinationPath }}</td>
@@ -39,6 +40,26 @@
                         -
                     {{ end }}
                 </td>
+                <td> {{ if .LastRunTime.Valid }}
+                        {{ .LastRunTime.Time.Format "2006-01-02 15:04:05" }}
+                    {{ else }}
+                        -
+                    {{ end }}
+                </td>
+                <td> <div id="job-status-{{ .ID }}" class="status-indicator">
+                        {{ if .LastRunStatus.Valid }}
+                            {{ if eq .LastRunStatus.String "Успішно" }}
+                                <span class="status-success">{{ .LastRunStatus.String }}</span>
+                            {{ else if eq .LastRunStatus.String "Помилка" }}
+                                <span class="status-error">{{ .LastRunStatus.String }}</span>
+                            {{ else }}
+                                <span class="status-info">{{ .LastRunStatus.String }}</span>
+                            {{ end }}
+                        {{ else }}
+                            <span class="status-info">Не запускався</span>
+                        {{ end }}
+                    </div>
+                </td>
                 <td>
                     <a href="/jobs/edit/{{ .ID }}" class="button edit-button">Редагувати</a>
                     <button
@@ -50,12 +71,21 @@
                     >
                         Видалити
                     </button>
+                    <button
+                        hx-post="/jobs/run/{{ .ID }}"
+                        hx-target="#job-status-{{ .ID }}"
+                        hx-swap="outerHTML"
+                        hx-indicator="#job-status-spinner-{{ .ID }}"
+                        class="button run-button"
+                    >
+                        Запустити
+                    </button>
+                    <span id="job-status-spinner-{{ .ID }}" class="htmx-indicator">Запуск...</span>
                 </td>
             </tr>
             {{ else }}
             <tr>
-                <td colspan="9">Наразі немає завдань бекапу.</td>
-            </tr>
+                <td colspan="11">Наразі немає завдань бекапу.</td> </tr>
             {{ end }}
         </tbody>
     </table>
