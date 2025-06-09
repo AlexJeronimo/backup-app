@@ -3,6 +3,7 @@ package main
 import (
 	"backup-app/internal/database"
 	"backup-app/internal/handlers"
+	"backup-app/internal/scheduler"
 	"context"
 	"fmt"
 	"html/template"
@@ -87,6 +88,12 @@ func main() {
 	userRepo := database.NewUserRepo(db)
 	jobRepo := database.NewJobRepo(db)
 
+	// Scheduler initialization
+	schedManager := scheduler.NewSchedulerManager(jobRepo)
+	schedManager.Start()
+
+	schedManager.LoadAndScheduleJobs()
+
 	//--- HTTP-server configuration ----
 
 	//Own multiplexor creating (router)
@@ -94,6 +101,9 @@ func main() {
 
 	//WebHandlers initialization
 	webHandlers := handlers.NewWebHandlers(templates, userRepo, jobRepo)
+
+	//sheduler tasks reload
+	webHandlers.SetSchedulerReloadFunc(schedManager.LoadAndScheduleJobs)
 
 	// Static files handling
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
@@ -171,6 +181,9 @@ func main() {
 	case sig := <-osSignals:
 		//Received system signal
 		log.Printf("Received system signal: %v. Begin gracefull shutdown...", sig)
+
+		//stop scheduller
+		schedManager.Stop()
 
 		//Create context with timeout for operation fnish
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)

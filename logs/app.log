@@ -550,3 +550,26 @@
 2025/06/09 14:31:35 main.go:184: Server shutdown gracefully
 2025/06/09 14:31:35 main.go:187: Application closed.
 2025/06/09 14:31:35 main.go:71: DataBAse connection closed.
+2025/06/09 14:47:20 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 14:47:20 db.go:52: Current DB schema version: 3
+2025/06/09 14:47:20 db.go:114: All DB migrations completed.
+2025/06/09 14:47:20 main.go:83: HTML-templates successfully loaded.
+2025/06/09 14:47:20 scheduler.go:28: Scheduler started.
+2025/06/09 14:47:20 scheduler.go:37: Loading and scheduling jobs...
+2025/06/09 14:47:20 scheduler.go:47: Existing cron entries cleared.
+2025/06/09 14:47:20 scheduler.go:61: Job 'test' (ID: 1) is manual, skipping scheduling.
+2025/06/09 14:47:20 scheduler.go:94: All active jobs loaded and scheduled.
+2025/06/09 14:47:20 main.go:170: Web Server launch on :8080...
+2025/06/09 14:47:38 handlers.go:223: EditJobFormHandler: Successfully rendered edit form for job ID 1.
+2025/06/09 14:47:42 handlers.go:227: UpdateJobHandler: Received PUT request.
+2025/06/09 14:47:42 handlers.go:259: UpdateJobHandler: Job ID 1, Form values - Name: test, Source: E:\BackupTest_Source, Dest: E:\BackupData\1, Schedule: daily, Active: true
+2025/06/09 14:47:42 handlers.go:284: UpdateJobHandler: Successfully updated backup task: test (ID: 1)
+2025/06/09 14:47:42 scheduler.go:37: Loading and scheduling jobs...
+2025/06/09 14:47:42 scheduler.go:47: Existing cron entries cleared.
+2025/06/09 14:47:42 scheduler.go:88: Scheduler: Job 'test' (ID: 1) scheduled with spec: '0 0 * * *'
+2025/06/09 14:47:42 scheduler.go:94: All active jobs loaded and scheduled.
+2025/06/09 14:49:26 main.go:183: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 14:49:26 scheduler.go:33: Scheduler stopped.
+2025/06/09 14:49:26 main.go:197: Server shutdown gracefully
+2025/06/09 14:49:26 main.go:200: Application closed.
+2025/06/09 14:49:26 main.go:72: DataBAse connection closed.

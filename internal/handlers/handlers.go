@@ -13,9 +13,10 @@ import (
 )
 
 type WebHandlers struct {
-	Templates *template.Template
-	UserRepo  *database.UserRepo
-	JobRepo   *database.JobRepo
+	Templates           *template.Template
+	UserRepo            *database.UserRepo
+	JobRepo             *database.JobRepo
+	SchedulerReloadFunc func()
 }
 
 func NewWebHandlers(tmpl *template.Template, userRepo *database.UserRepo, jobRepo *database.JobRepo) *WebHandlers {
@@ -24,6 +25,10 @@ func NewWebHandlers(tmpl *template.Template, userRepo *database.UserRepo, jobRep
 		UserRepo:  userRepo,
 		JobRepo:   jobRepo,
 	}
+}
+
+func (wh *WebHandlers) SetSchedulerReloadFunc(f func()) {
+	wh.SchedulerReloadFunc = f
 }
 
 func (wh *WebHandlers) HomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -90,6 +95,7 @@ func (wh *WebHandlers) CreateJobFormHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (wh *WebHandlers) CreateJobHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("CreateJobHandler: Received POST request.")
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method ot allowed", http.StatusMethodNotAllowed)
 		return
@@ -131,6 +137,10 @@ func (wh *WebHandlers) CreateJobHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	log.Printf("Successfully created new backup task: %s", name)
+
+	if wh.SchedulerReloadFunc != nil {
+		wh.SchedulerReloadFunc()
+	}
 
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
@@ -272,6 +282,11 @@ func (wh *WebHandlers) UpdateJobHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	log.Printf("UpdateJobHandler: Successfully updated backup task: %s (ID: %d)", name, jobID)
+
+	if wh.SchedulerReloadFunc != nil {
+		wh.SchedulerReloadFunc()
+	}
+
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `<div class="message success">Task "%s" successfully updated!</div>`, name)
@@ -304,6 +319,11 @@ func (wh *WebHandlers) DeleteJobHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	log.Printf("DeleteJobHandler: Successfully deleted backup task with ID: %d", jobID)
+
+	if wh.SchedulerReloadFunc != nil {
+		wh.SchedulerReloadFunc()
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
