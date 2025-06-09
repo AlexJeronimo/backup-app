@@ -573,3 +573,30 @@
 2025/06/09 14:49:26 main.go:197: Server shutdown gracefully
 2025/06/09 14:49:26 main.go:200: Application closed.
 2025/06/09 14:49:26 main.go:72: DataBAse connection closed.
+2025/06/09 14:53:50 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 14:53:50 db.go:52: Current DB schema version: 3
+2025/06/09 14:53:50 db.go:114: All DB migrations completed.
+2025/06/09 14:53:50 main.go:83: HTML-templates successfully loaded.
+2025/06/09 14:53:50 scheduler.go:29: Scheduler started.
+2025/06/09 14:53:50 scheduler.go:101: Loading and scheduling jobs...
+2025/06/09 14:53:50 scheduler.go:113: Existing cron entries cleared.
+2025/06/09 14:53:50 scheduler.go:133: Scheduler: Invalid cron spec 'daily' for job 'test' (ID: 1): expected exactly 5 fields, found 1: [daily]. Skipping scheduling.
+2025/06/09 14:53:50 scheduler.go:169: All active jobs loaded and scheduled.
+2025/06/09 14:53:50 main.go:170: Web Server launch on :8080...
+2025/06/09 14:54:04 handlers.go:223: EditJobFormHandler: Successfully rendered edit form for job ID 1.
+2025/06/09 14:54:40 handlers.go:227: UpdateJobHandler: Received PUT request.
+2025/06/09 14:54:40 handlers.go:259: UpdateJobHandler: Job ID 1, Form values - Name: test, Source: E:\BackupTest_Source, Dest: E:\BackupData\1, Schedule: 56 14 * * *, Active: true
+2025/06/09 14:54:40 handlers.go:284: UpdateJobHandler: Successfully updated backup task: test (ID: 1)
+2025/06/09 14:54:40 scheduler.go:101: Loading and scheduling jobs...
+2025/06/09 14:54:40 scheduler.go:113: Existing cron entries cleared.
+2025/06/09 14:54:40 scheduler.go:166: Scheduler: Job 'test' (ID: 1) scheduled with spec: '56 14 * * *'
+2025/06/09 14:54:40 scheduler.go:169: All active jobs loaded and scheduled.
+2025/06/09 14:56:00 scheduler.go:148: Scheduler: Initiating scheduled backup for job 'test' (ID: 1)
+2025/06/09 14:56:00 backup.go:27: Starting backup for job ID 1 from 'E:\BackupTest_Source' to 'E:\BackupData\1'
+2025/06/09 14:56:06 backup.go:81: Backup for job ID 1 completed successfully.
+2025/06/09 14:56:06 scheduler.go:155: Scheduler: Job ID 1 status updated to 'Success' (Duration: 6.5856563s)
+2025/06/09 16:48:05 main.go:183: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 16:48:05 scheduler.go:34: Scheduler stopped.
+2025/06/09 16:48:05 main.go:197: Server shutdown gracefully
+2025/06/09 16:48:05 main.go:200: Application closed.
+2025/06/09 16:48:05 main.go:72: DataBAse connection closed.

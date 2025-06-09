@@ -4,8 +4,10 @@
     <div id="form-messages">
         </div>
 
-    <form hx-put="/jobs/edit/{{ .Job.ID }}" hx-target="#form-messages" hx-swap="innerHTML" hx-on::after-request="if(event.detail.xhr.status == 200) { event.target.reset(); window.location.href = '/'; }">
-        <input type="hidden" name="id" value="{{ .Job.ID }}"> <div class="form-group">
+    <form hx-put="/jobs/edit/{{ .Job.ID }}" hx-target="#form-messages" hx-swap="innerHTML" hx-on::after-request="if(event.detail.xhr.status == 200) { window.location.href = '/'; }">
+        <input type="hidden" name="id" value="{{ .Job.ID }}">
+
+        <div class="form-group">
             <label for="name">Назва Завдання:</label>
             <input type="text" id="name" name="name" value="{{ .Job.Name }}" required>
         </div>
@@ -21,13 +23,9 @@
         </div>
 
         <div class="form-group">
-            <label for="schedule">Розклад:</label>
-            <select id="schedule" name="schedule" required>
-                <option value="manual" {{ if eq .Job.Schedule "manual" }}selected{{ end }}>Вручну</option>
-                <option value="daily" {{ if eq .Job.Schedule "daily" }}selected{{ end }}>Щоденно</option>
-                <option value="weekly" {{ if eq .Job.Schedule "weekly" }}selected{{ end }}>Щотижня</option>
-                <option value="monthly" {{ if eq .Job.Schedule "monthly" }}selected{{ end }}>Щомісяця</option>
-            </select>
+            <label for="schedule">Cron-специфікація (наприклад, "0 0 * * *", або "manual" для ручного):</label>
+            <input type="text" id="schedule" name="schedule" value="{{ .Job.Schedule }}" required>
+            <small>Хвилина(0-59) Година(0-23) ДеньМісяця(1-31) Місяць(1-12) ДеньТижня(0-6)</small>
         </div>
 
         <div class="form-group checkbox-group">

@@ -21,10 +21,28 @@ import (
 
 var templates *template.Template
 
-//TODO: add trhrotling (limits) for resource usage by app, RAM, CPU, Network bandwidth for each job separatelly, network limitation for all system.
-//TODO: convert bytes to megabytes/gigabytes/... get it from size and apply automatically
-//TODO: what abuot large file copy to network, s3, etc?
-//TODO: chunking/splitting, resumable uploads, retries, timeouts to avoid breaches on instable networks
+// TODO: add trhrotling (limits) for resource usage by app, RAM, CPU, Network bandwidth for each job separatelly, network limitation for all system.
+// TODO: convert bytes to megabytes/gigabytes/... get it from size and apply automatically
+// TODO: what abuot large file copy to network, s3, etc?
+// TODO: chunking/splitting, resumable uploads, retries, timeouts to avoid breaches on instable networks
+// TODO: modify scheduller to human readeble interface. with simple set time, adn chose daily/,amually/or set which days should be included or by which days should backup occurs
+// TODO: add dynamic update to job status
+// TODO: fix page view (background width not changed but tasks and another info width more wide than background)
+// TODO: add next run field (according to scheduller, or "not set" for manual backup)
+// TODO: list of backups should be more tableview and more narrow (should fit in windiows size)
+// TODO: add data transfer view for exact backup run (how much data will be copied)
+// TODO: add backup size in destination directory
+// TODO: add support for MySQL, MSSQL, PostgreSQL (add chose db during install process)
+// TODO: add some kind of install process with first configuration what type of DB will be used and with initial admin and password config, another configs that should be set during first install/configuration
+// TODO: add migration from one type of DB to another
+// TODO: in feature think about creating agents, to handle more independent backups (agnets as source and target with configuring source and destination on agents). But all backups managed from main endpoint (aka server)
+// TODO: move all yaml/json configs to DB
+// TODO: add to support SFTP
+// TODO: add to support of TLS (self signed cert (generate and apply) or set certificate if you have one)
+// TODO: add to keep passwords in encrypted mode
+// TODO: add admin fucntionality (configure server, add users, create and assign roles)
+// TODO: add user support (each user has its own backup portal and access to backup jobs according to assigned role, each user can create self backup jobs) (admin has access everywere)
+// TODO: add logs output to admin console (create functionality to see logs with live refresh)
 
 func main() {
 	//Load configuration

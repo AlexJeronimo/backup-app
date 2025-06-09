@@ -1,7 +1,10 @@
 {{ define "content" }}
     <h2>Створити Нове Завдання Бекапу</h2>
 
-    <form hx-post="/jobs/new" hx-swap="outerHTML" hx-target="#form-container" hx-indicator="#form-spinner">
+    <div id="form-messages">
+        </div>
+
+    <form hx-post="/jobs/new" hx-target="#form-messages" hx-swap="innerHTML" hx-on::after-request="if(event.detail.xhr.status == 200) this.reset();">
         <div class="form-group">
             <label for="name">Назва Завдання:</label>
             <input type="text" id="name" name="name" required>
@@ -18,13 +21,45 @@
         </div>
 
         <div class="form-group">
-            <label for="schedule">Розклад:</label>
-            <select id="schedule" name="schedule" required>
-                <option value="manual">Вручну</option>
-                <option value="daily">Щоденно</option>
-                <option value="weekly">Щотижня</option>
-                <option value="monthly">Щомісяця</option>
+            <label for="schedule_type">Тип розкладу:</label>
+            <select id="schedule_type" name="schedule_type" onchange="toggleCronInput()">
+                <option value="manual">Вручну (запуск на вимогу)</option>
+                <option value="daily_at_time">Щоденно о ...</option>
+                <option value="weekly_at_time">Щотижня в ... о ...</option>
+                <option value="monthly_at_time">Щомісяця ... числа о ...</option>
+                <option value="custom_cron">Власна Cron-специфікація</option>
             </select>
+        </div>
+
+        <div class="form-group" id="daily_input" style="display:none;">
+            <label for="daily_hour">Година (0-23):</label>
+            <input type="number" id="daily_hour" min="0" max="23" value="0">
+            <label for="daily_minute">Хвилина (0-59):</label>
+            <input type="number" id="daily_minute" min="0" max="59" value="0">
+        </div>
+
+        <div class="form-group" id="weekly_input" style="display:none;">
+            <label for="weekly_day">День тижня (0=Нд, 1=Пн, ... 6=Сб):</label>
+            <input type="number" id="weekly_day" min="0" max="6" value="0">
+            <label for="weekly_hour">Година (0-23):</label>
+            <input type="number" id="weekly_hour" min="0" max="23" value="0">
+            <label for="weekly_minute">Хвилина (0-59):</label>
+            <input type="number" id="weekly_minute" min="0" max="59" value="0">
+        </div>
+
+        <div class="form-group" id="monthly_input" style="display:none;">
+            <label for="monthly_day">День місяця (1-31):</label>
+            <input type="number" id="monthly_day" min="1" max="31" value="1">
+            <label for="monthly_hour">Година (0-23):</label>
+            <input type="number" id="monthly_hour" min="0" max="23" value="0">
+            <label for="monthly_minute">Хвилина (0-59):</label>
+            <input type="number" id="monthly_minute" min="0" max="59" value="0">
+        </div>
+
+        <div class="form-group" id="cron_input" style="display:none;">
+            <label for="schedule_cron">Cron-специфікація (наприклад, "0 0 * * *"):</label>
+            <input type="text" id="schedule_cron" name="schedule" placeholder="* * * * *" value="* * * * *">
+            <small>Хвилина(0-59) Година(0-23) ДеньМісяця(1-31) Місяць(1-12) ДеньТижня(0-6)</small>
         </div>
 
         <div class="form-group checkbox-group">
@@ -32,11 +67,74 @@
             <label for="is_active">Активне завдання</label>
         </div>
 
-        <button type="submit">Створити Завдання</button>
+        <button type="submit" onclick="generateCronString()">Створити Завдання</button>
         <span id="form-spinner" class="htmx-indicator">Завантаження...</span>
     </form>
 
     <div id="form-container"></div>
 
     <p><a href="/">Повернутися на головну</a></p>
+
+    <script>
+        function toggleCronInput() {
+            document.getElementById('daily_input').style.display = 'none';
+            document.getElementById('weekly_input').style.display = 'none';
+            document.getElementById('monthly_input').style.display = 'none';
+            document.getElementById('cron_input').style.display = 'none';
+
+            const scheduleType = document.getElementById('schedule_type').value;
+            if (scheduleType === 'daily_at_time') {
+                document.getElementById('daily_input').style.display = 'block';
+            } else if (scheduleType === 'weekly_at_time') {
+                document.getElementById('weekly_input').style.display = 'block';
+            } else if (scheduleType === 'monthly_at_time') {
+                document.getElementById('monthly_input').style.display = 'block';
+            } else if (scheduleType === 'custom_cron') {
+                document.getElementById('cron_input').style.display = 'block';
+            }
+        }
+
+        // Функція для генерації cron-рядка перед відправкою форми
+        function generateCronString() {
+            const scheduleType = document.getElementById('schedule_type').value;
+            let cronString = "";
+            let minute, hour, dayOfMonth, month, dayOfWeek;
+
+            switch (scheduleType) {
+                case "manual":
+                    cronString = "manual"; // Спеціальне слово для ручного запуску
+                    break;
+                case "daily_at_time":
+                    minute = document.getElementById('daily_minute').value;
+                    hour = document.getElementById('daily_hour').value;
+                    cronString = `${minute} ${hour} * * *`;
+                    break;
+                case "weekly_at_time":
+                    minute = document.getElementById('weekly_minute').value;
+                    hour = document.getElementById('weekly_hour').value;
+                    dayOfWeek = document.getElementById('weekly_day').value;
+                    cronString = `${minute} ${hour} * * ${dayOfWeek}`;
+                    break;
+                case "monthly_at_time":
+                    minute = document.getElementById('monthly_minute').value;
+                    hour = document.getElementById('monthly_hour').value;
+                    dayOfMonth = document.getElementById('monthly_day').value;
+                    cronString = `${minute} ${hour} ${dayOfMonth} * *`;
+                    break;
+                case "custom_cron":
+                    cronString = document.getElementById('schedule_cron').value;
+                    break;
+            }
+            // Встановлюємо згенерований cron-рядок у приховане поле,
+            // яке має ім'я "schedule" і буде відправлено на сервер
+            let hiddenScheduleInput = document.createElement('input');
+            hiddenScheduleInput.type = 'hidden';
+            hiddenScheduleInput.name = 'schedule'; // Важливо! Це ім'я буде очікувати Go-сервер
+            hiddenScheduleInput.value = cronString;
+            document.querySelector('form').appendChild(hiddenScheduleInput);
+        }
+
+        // Ініціалізуємо стан при завантаженні сторінки
+        document.addEventListener('DOMContentLoaded', toggleCronInput);
+    </script>
 {{ end }}
