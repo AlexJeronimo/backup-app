@@ -275,3 +275,33 @@ func (wh *WebHandlers) UpdateJobHandler(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `<div class="message success">Task "%s" successfully updated!</div>`, name)
 }
+
+func (wh *WebHandlers) DeleteJobHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("DeleteJobHandler: Received DELETE request.")
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	idStr := r.PathValue("id")
+	jobID, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Printf("DeleteJobHandler: Invalid job ID in URL: %v", err)
+		http.Error(w, "Invalid task ID", http.StatusBadRequest)
+		return
+	}
+
+	err = wh.JobRepo.DeleteJob(jobID)
+	if err != nil {
+		log.Printf("DeleteJobHandler: Error deleting backup task (ID %d): %v", jobID, err)
+		if err.Error() == fmt.Sprintf("task with ID %d not found for deleting", jobID) {
+			http.Error(w, fmt.Sprintf("task with ID %d not found.", jobID), http.StatusNotFound)
+		} else {
+			http.Error(w, "Error deleting task.", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	log.Printf("DeleteJobHandler: Successfully deleted backup task with ID: %d", jobID)
+	w.WriteHeader(http.StatusOK)
+}

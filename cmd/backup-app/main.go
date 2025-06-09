@@ -109,6 +109,8 @@ func main() {
 	mux.HandleFunc("GET /jobs/edit/{id}", webHandlers.EditJobFormHandler)
 	mux.HandleFunc("PUT /jobs/edit/{id}", webHandlers.UpdateJobHandler)
 
+	mux.HandleFunc("DELETE /jobs/delete/{id}", webHandlers.DeleteJobHandler)
+
 	// sysinfo Handlers
 	mux.HandleFunc("/health", handlers.HealthHandler)
 	mux.HandleFunc("/status", handlers.StatusHandler)

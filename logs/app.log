@@ -490,3 +490,21 @@
 2025/06/09 13:27:48 main.go:180: Server shutdown gracefully
 2025/06/09 13:27:48 main.go:183: Application closed.
 2025/06/09 13:27:48 main.go:71: DataBAse connection closed.
+2025/06/09 13:33:17 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 13:33:17 db.go:52: Current DB schema version: 3
+2025/06/09 13:33:17 db.go:112: All DB migrations completed.
+2025/06/09 13:33:17 main.go:82: HTML-templates successfully loaded.
+2025/06/09 13:33:17 main.go:158: Web Server launch on :8080...
+2025/06/09 13:33:26 handlers.go:280: DeleteJobHandler: Received DELETE request.
+2025/06/09 13:33:26 handlers.go:305: DeleteJobHandler: Successfully deleted backup task with ID: 1
+2025/06/09 13:33:39 handlers.go:132: Successfully created new backup task: Daily Document Backup3
+2025/06/09 13:33:52 handlers.go:132: Successfully created new backup task: 1
+2025/06/09 13:34:03 handlers.go:132: Successfully created new backup task: 2
+2025/06/09 13:34:32 handlers.go:212: EditJobFormHandler: Successfully rendered edit form for job ID 2.
+2025/06/09 13:34:35 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 13:34:35 handlers.go:248: UpdateJobHandler: Job ID 2, Form values - Name: Daily Document Backup3, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: false
+2025/06/09 13:34:35 handlers.go:273: UpdateJobHandler: Successfully updated backup task: Daily Document Backup3 (ID: 2)
+2025/06/09 13:35:00 main.go:171: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 13:35:00 main.go:182: Server shutdown gracefully
+2025/06/09 13:35:00 main.go:185: Application closed.
+2025/06/09 13:35:00 main.go:71: DataBAse connection closed.

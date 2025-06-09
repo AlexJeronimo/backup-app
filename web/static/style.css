@@ -269,3 +269,13 @@ button[type="submit"]:hover {
 .delete-button:hover {
     background-color: #c82333;
 }
+
+.delete-button {
+    background-color: #dc3545; /* Red for delete */
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}

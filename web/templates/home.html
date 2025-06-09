@@ -14,12 +14,12 @@
                 <th>Активне</th>
                 <th>Створено</th>
                 <th>Оновлено</th>
-                <th>Дії</th> </tr>
+                <th>Дії</th>
+            </tr>
         </thead>
         <tbody>
             {{ range .Jobs }}
-            <tr>
-                <td>{{ .ID }}</td>
+            <tr id="job-{{ .ID }}"> <td>{{ .ID }}</td>
                 <td>{{ .Name }}</td>
                 <td>{{ .SourcePath }}</td>
                 <td>{{ .DestinationPath }}</td>
@@ -33,18 +33,29 @@
                 </td>
                 <td>{{ .CreatedAt.Time.Format "2006-01-02 15:04:05" }}</td>
                 <td>
-                    {{ if .UpdatedAt.Valid }} {{ .UpdatedAt.Time.Format "2006-01-02 15:04:05" }}
+                    {{ if .UpdatedAt.Valid }}
+                        {{ .UpdatedAt.Time.Format "2006-01-02 15:04:05" }}
                     {{ else }}
                         -
                     {{ end }}
                 </td>
                 <td>
                     <a href="/jobs/edit/{{ .ID }}" class="button edit-button">Редагувати</a>
-                    </td>
+                    <button
+                        hx-delete="/jobs/delete/{{ .ID }}"
+                        hx-confirm="Ви впевнені, що хочете видалити завдання '{{ .Name }}'?"
+                        hx-target="#job-{{ .ID }}"
+                        hx-swap="outerHTML swap:.5s"
+                        class="button delete-button"
+                    >
+                        Видалити
+                    </button>
+                </td>
             </tr>
             {{ else }}
             <tr>
-                <td colspan="9">Наразі немає завдань бекапу.</td> </tr>
+                <td colspan="9">Наразі немає завдань бекапу.</td>
+            </tr>
             {{ end }}
         </tbody>
     </table>
