@@ -20,6 +20,11 @@ import (
 
 var templates *template.Template
 
+//TODO: add trhrotling (limits) for resource usage by app, RAM, CPU, Network bandwidth for each job separatelly, network limitation for all system.
+//TODO: convert bytes to megabytes/gigabytes/... get it from size and apply automatically
+//TODO: what abuot large file copy to network, s3, etc?
+//TODO: chunking/splitting, resumable uploads, retries, timeouts to avoid breaches on instable networks
+
 func main() {
 	//Load configuration
 	cfg, err := LoadConfig()
@@ -100,6 +105,9 @@ func main() {
 
 	mux.HandleFunc("/jobs/new", webHandlers.CreateJobFormHandler)
 	mux.HandleFunc("POST /jobs/new", webHandlers.CreateJobHandler)
+
+	mux.HandleFunc("GET /jobs/edit/{id}", webHandlers.EditJobFormHandler)
+	mux.HandleFunc("PUT /jobs/edit/{id}", webHandlers.UpdateJobHandler)
 
 	// sysinfo Handlers
 	mux.HandleFunc("/health", handlers.HealthHandler)

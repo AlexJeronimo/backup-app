@@ -13,7 +13,8 @@
                 <th>Розклад</th>
                 <th>Активне</th>
                 <th>Створено</th>
-            </tr>
+                <th>Оновлено</th>
+                <th>Дії</th> </tr>
         </thead>
         <tbody>
             {{ range .Jobs }}
@@ -31,11 +32,19 @@
                     {{ end }}
                 </td>
                 <td>{{ .CreatedAt.Time.Format "2006-01-02 15:04:05" }}</td>
+                <td>
+                    {{ if .UpdatedAt.Valid }} {{ .UpdatedAt.Time.Format "2006-01-02 15:04:05" }}
+                    {{ else }}
+                        -
+                    {{ end }}
+                </td>
+                <td>
+                    <a href="/jobs/edit/{{ .ID }}" class="button edit-button">Редагувати</a>
+                    </td>
             </tr>
             {{ else }}
             <tr>
-                <td colspan="7">Наразі немає завдань бекапу.</td>
-            </tr>
+                <td colspan="9">Наразі немає завдань бекапу.</td> </tr>
             {{ end }}
         </tbody>
     </table>

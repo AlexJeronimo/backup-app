@@ -30,8 +30,8 @@ func (r *JobRepo) CreateJob(name, sourcePath, destinationPath, schedule string, 
 	query := `INSERT INTO backup_jobs (name, source_path, destination_path, schedule, is_active, created_at, updated_at)
 				VALUES (?, ?, ?, ?, ?, ?, ?);`
 	result, err := r.db.Exec(query, name, sourcePath, destinationPath, schedule, isActive,
-		sql.NullTime{Time: now, Valid: true}.Time.Format("2006-01-02 15:04:05.000"),
-		sql.NullTime{Time: now, Valid: true}.Time.Format("2006-01-02 15:04:05.000"))
+		sql.NullTime{Time: now, Valid: true}.Time.Format(time.RFC3339Nano),
+		sql.NullTime{Time: now, Valid: true}.Time.Format(time.RFC3339Nano))
 	if err != nil {
 		return nil, fmt.Errorf("backup job insert error '%s': %w", name, err)
 	}
@@ -69,13 +69,13 @@ func (r *JobRepo) GetJobByID(id int) (*BackupJob, error) {
 		return nil, fmt.Errorf("error getting backup task with ID %d: %w", id, err)
 	}
 
-	parseCreatedAt, err := time.Parse("2006-01-02 15:04:05.000", createdAtStr)
+	parseCreatedAt, err := time.Parse(time.RFC3339Nano, createdAtStr)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing created_at for task with ID %d: %w", id, err)
 	}
 	job.CreatedAt = sql.NullTime{Time: parseCreatedAt, Valid: true}
 
-	parseUpdatedAt, err := time.Parse("2006-01-02 15:04:05.000", updatedAtStr)
+	parseUpdatedAt, err := time.Parse(time.RFC3339Nano, updatedAtStr)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing updated_at for task with ID %d: %w", id, err)
 	}
@@ -99,13 +99,13 @@ func (r *JobRepo) GetJobByName(name string) (*BackupJob, error) {
 		return nil, fmt.Errorf("error getting backup task '%s': %w", name, err)
 	}
 
-	parseCreatedAt, err := time.Parse("2006-01-02 15:04:05.000", createdAtStr)
+	parseCreatedAt, err := time.Parse(time.RFC3339Nano, createdAtStr)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing created_at for task '%s': %w", name, err)
 	}
 	job.CreatedAt = sql.NullTime{Time: parseCreatedAt, Valid: true}
 
-	parseUpdatedAt, err := time.Parse("2006-01-02 15:04:05.000", updatedAtStr)
+	parseUpdatedAt, err := time.Parse(time.RFC3339Nano, updatedAtStr)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing updated_at for task '%s': %w", name, err)
 	}
@@ -114,7 +114,7 @@ func (r *JobRepo) GetJobByName(name string) (*BackupJob, error) {
 	return &job, nil
 }
 
-func (r *JobRepo) UpdateJob(job *BackupJob) error {
+/* func (r *JobRepo) UpdateJob(job *BackupJob) error {
 	job.UpdatedAt = sql.NullTime{Time: time.Now(), Valid: true}
 	query := `UPDATE backup_jobs SET
 				name = ?, source_path = ?, destination_path = ?,
@@ -136,6 +136,27 @@ func (r *JobRepo) UpdateJob(job *BackupJob) error {
 	}
 
 	return nil
+} */
+
+func (r *JobRepo) UpdateJob(id int, name, sourcePath, destinationPath, schedule string, isActive bool) (*BackupJob, error) {
+	stmt, err := r.db.Prepare(`
+		UPDATE backup_jobs
+		SET name = ?, source_path = ?, destination_path = ?, schedule = ?,
+		is_active = ?, updated_at = ?
+		WHERE id = ?;
+	`)
+	if err != nil {
+		return nil, fmt.Errorf("error prepear UPDATE request: %w", err)
+	}
+	defer stmt.Close()
+
+	updatedAt := time.Now()
+	_, err = stmt.Exec(name, sourcePath, destinationPath, schedule, isActive, updatedAt.Format(time.RFC3339Nano), id)
+	if err != nil {
+		return nil, fmt.Errorf("error executing UPDATE request: %w", err)
+	}
+
+	return r.GetJobByID(id)
 }
 
 func (r *JobRepo) DeleteJob(id int) error {
@@ -173,13 +194,13 @@ func (r *JobRepo) GetAllJobs() ([]BackupJob, error) {
 			return nil, fmt.Errorf("erro scaning row of backup task: %w", err)
 		}
 
-		parsedCreatedAt, err := time.Parse("2006-01-02 15:04:05.000", createdAtStr)
+		parsedCreatedAt, err := time.Parse(time.RFC3339Nano, createdAtStr)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing created_at for task: %w", err)
 		}
 		job.CreatedAt = sql.NullTime{Time: parsedCreatedAt, Valid: true}
 
-		parsedUpdatedAt, err := time.Parse("2006-01-02 15:04:05.000", updatedAtStr)
+		parsedUpdatedAt, err := time.Parse(time.RFC3339Nano, updatedAtStr)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing updated_at for task: %w", err)
 		}

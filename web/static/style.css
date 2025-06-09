@@ -237,3 +237,35 @@ button[type="submit"]:hover {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+.button {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-right: 5px; /* Для відступу між кнопками */
+}
+
+.edit-button {
+    background-color: #ffc107; /* Yellow for edit */
+    color: #343a40;
+    border: 1px solid #ffc107;
+}
+
+.edit-button:hover {
+    background-color: #e0a800;
+    color: white;
+}
+
+/* Delete button will be added later */
+.delete-button {
+    background-color: #dc3545; /* Red for delete */
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}

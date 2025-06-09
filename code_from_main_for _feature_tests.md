@@ -309,7 +309,7 @@
 	if err != nil {
 		log.Printf("Error during first backup launch: %v", err)
 	} else {
-		log.Printf("First backup completed successfully. Copied files: %d, Size: %d bytes", totalCopiedFiles, totalCopiedBytes) //TODO: convert bytes to megabytes/gigabytes/... get it from size and apply automatically
+		log.Printf("First backup completed successfully. Copied files: %d, Size: %d bytes", totalCopiedFiles, totalCopiedBytes) 
 	}
 	log.Printf("Time of first backup: %s", time.Since(backupStartTime))
 

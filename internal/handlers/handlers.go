@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -156,4 +157,121 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(3 * time.Second)
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Overal backup status: Vaiting for main functional realization. (GET /status)")
+}
+
+func (wh *WebHandlers) EditJobFormHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	idStr := r.PathValue("id")
+	jobID, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Printf("EditJobFormHandler: Invalid job ID in URL: %v", err)
+		http.Error(w, "Incorrect ID request", http.StatusBadRequest)
+		return
+	}
+
+	job, err := wh.JobRepo.GetJobByID(jobID)
+	if err != nil {
+		log.Printf("EditJobFormHandler: Error getting job bu ID %d: %v", jobID, err)
+		if err.Error() == fmt.Sprintf("backup task with ID %d not found", jobID) {
+			http.NotFound(w, r)
+		} else {
+			http.Error(w, " Can't load task for editing", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	tmpl, err := wh.Templates.Clone()
+	if err != nil {
+		log.Printf("EditJobFromHandler: Error template cloning: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl, err = tmpl.ParseFiles(filepath.Join("web", "templates", "edit_job.html"))
+	if err != nil {
+		log.Printf("EditJobFormHandler: Error parsing edit_job.html: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Job *database.BackupJob
+	}{
+		Job: job,
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "layout.html", data); err != nil {
+		log.Printf("EditJobFormHandler: Error rendering edit_job.html: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	log.Printf("EditJobFormHandler: Successfully rendered edit form for job ID %d.", jobID)
+}
+
+func (wh *WebHandlers) UpdateJobHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("UpdateJobHandler: Received PUT request.")
+	if r.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	idStr := r.PathValue("id")
+	jobID, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Printf("UpdateJobHandler: Invalid job ID in URL: %v", err)
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, `<div class="message error">Error: Invalid task ID.</div>`)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		log.Printf("UpdateJobHandler: Error form parsing: %v", err)
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, `<div class="message error">Error: Can't parse form data.</div>`)
+		return
+	}
+
+	name := r.FormValue("name")
+	sourcePath := r.FormValue("source_path")
+	destinationPath := r.FormValue("destination_path")
+	schedule := r.FormValue("schedule")
+	isActiveStr := r.FormValue("is_active")
+
+	isActive := (isActiveStr == "true")
+
+	log.Printf("UpdateJobHandler: Job ID %d, Form values - Name: %s, Source: %s, Dest: %s, Schedule: %s, Active: %t",
+		jobID, name, sourcePath, destinationPath, schedule, isActive)
+
+	if name == "" || sourcePath == "" || destinationPath == "" || schedule == "" {
+		log.Println("UpdateJobHandler: Not all fields filled with necessary info. Sending Bad Request.")
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, `<div class="message error">Error: please fill all necessary fields.</div>`)
+		return
+	}
+
+	_, err = wh.JobRepo.UpdateJob(jobID, name, sourcePath, destinationPath, schedule, isActive)
+	if err != nil {
+		log.Printf("UpdateJobHandler: Error updating backup task in DB (ID %d): %v", jobID, err)
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusInternalServerError)
+
+		if database.IsUniqueConstraintError(err) {
+			fmt.Fprintf(w, `<div class="message error">Error: Task with this name or path exists.</div>`)
+		} else {
+			fmt.Fprintf(w, `<div class="message error">Error update task: %v</div>`, err)
+		}
+		return
+	}
+
+	log.Printf("UpdateJobHandler: Successfully updated backup task: %s (ID: %d)", name, jobID)
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, `<div class="message success">Task "%s" successfully updated!</div>`, name)
 }

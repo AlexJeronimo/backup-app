@@ -359,3 +359,134 @@
 2025/06/05 16:58:07 main.go:172: Server shutdown gracefully
 2025/06/05 16:58:07 main.go:175: Application closed.
 2025/06/05 16:58:07 main.go:66: DataBAse connection closed.
+2025/06/09 08:51:45 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 08:51:45 db.go:52: Current DB schema version: 3
+2025/06/09 08:51:45 db.go:112: All DB migrations completed.
+2025/06/09 08:51:45 main.go:82: HTML-templates successfully loaded.
+2025/06/09 08:51:45 main.go:153: Web Server launch on :8080...
+2025/06/09 08:52:33 main.go:166: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 08:52:33 main.go:177: Server shutdown gracefully
+2025/06/09 08:52:33 main.go:180: Application closed.
+2025/06/09 08:52:33 main.go:71: DataBAse connection closed.
+2025/06/09 08:54:20 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 08:54:20 db.go:52: Current DB schema version: 3
+2025/06/09 08:54:20 db.go:112: All DB migrations completed.
+2025/06/09 08:54:20 main.go:82: HTML-templates successfully loaded.
+2025/06/09 08:54:20 main.go:155: Web Server launch on :8080...
+2025/06/09 08:54:42 handlers.go:212: EditJobFormHandler: Successfully rendered edit form for job ID 8.
+2025/06/09 08:56:26 main.go:168: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 08:56:26 main.go:179: Server shutdown gracefully
+2025/06/09 08:56:26 main.go:182: Application closed.
+2025/06/09 08:56:26 main.go:71: DataBAse connection closed.
+2025/06/09 08:56:30 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 08:56:31 db.go:52: Current DB schema version: 3
+2025/06/09 08:56:31 db.go:112: All DB migrations completed.
+2025/06/09 08:56:31 main.go:82: HTML-templates successfully loaded.
+2025/06/09 08:56:31 main.go:155: Web Server launch on :8080...
+2025/06/09 08:57:40 main.go:168: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 08:57:40 main.go:179: Server shutdown gracefully
+2025/06/09 08:57:40 main.go:182: Application closed.
+2025/06/09 08:57:40 main.go:71: DataBAse connection closed.
+2025/06/09 08:58:08 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 08:58:08 db.go:52: Current DB schema version: 3
+2025/06/09 08:58:08 db.go:112: All DB migrations completed.
+2025/06/09 08:58:08 main.go:82: HTML-templates successfully loaded.
+2025/06/09 08:58:08 main.go:156: Web Server launch on :8080...
+2025/06/09 08:58:17 handlers.go:212: EditJobFormHandler: Successfully rendered edit form for job ID 1.
+2025/06/09 08:58:26 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 08:58:26 handlers.go:251: UpdateJobHandler: Job ID 1, Form values - Name: Daily Document Backup3, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: true
+2025/06/09 08:58:26 handlers.go:265: UpdateJobHandler: Error updating backup task in DB (ID 1): error parsing updated_at for task with ID 1: parsing time "2025-06-09 08:58:26.2201898+03:00": extra text: "1898+03:00"
+2025/06/09 08:58:30 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 08:58:30 handlers.go:251: UpdateJobHandler: Job ID 1, Form values - Name: Daily Document Backup3, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: true
+2025/06/09 08:58:30 handlers.go:265: UpdateJobHandler: Error updating backup task in DB (ID 1): error parsing updated_at for task with ID 1: parsing time "2025-06-09 08:58:30.7811752+03:00": extra text: "1752+03:00"
+2025/06/09 08:58:31 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 08:58:31 handlers.go:251: UpdateJobHandler: Job ID 1, Form values - Name: Daily Document Backup3, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: true
+2025/06/09 08:58:31 handlers.go:265: UpdateJobHandler: Error updating backup task in DB (ID 1): error parsing updated_at for task with ID 1: parsing time "2025-06-09 08:58:31.807442+03:00": extra text: "442+03:00"
+2025/06/09 08:58:32 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 08:58:32 handlers.go:251: UpdateJobHandler: Job ID 1, Form values - Name: Daily Document Backup3, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: true
+2025/06/09 08:58:32 handlers.go:265: UpdateJobHandler: Error updating backup task in DB (ID 1): error parsing updated_at for task with ID 1: parsing time "2025-06-09 08:58:32.58983+03:00": extra text: "83+03:00"
+2025/06/09 08:58:33 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 08:58:32.58983+03:00": extra text: "83+03:00"
+2025/06/09 08:58:39 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 08:58:32.58983+03:00": extra text: "83+03:00"
+2025/06/09 08:58:42 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 08:58:32.58983+03:00": extra text: "83+03:00"
+2025/06/09 08:58:42 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 08:58:32.58983+03:00": extra text: "83+03:00"
+2025/06/09 09:02:03 main.go:169: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 09:02:03 main.go:180: Server shutdown gracefully
+2025/06/09 09:02:03 main.go:183: Application closed.
+2025/06/09 09:02:03 main.go:71: DataBAse connection closed.
+2025/06/09 13:06:01 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 13:06:01 db.go:52: Current DB schema version: 3
+2025/06/09 13:06:01 db.go:112: All DB migrations completed.
+2025/06/09 13:06:01 main.go:82: HTML-templates successfully loaded.
+2025/06/09 13:06:01 main.go:156: Web Server launch on :8080...
+2025/06/09 13:06:08 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 08:58:32.58983+03:00": extra text: "83+03:00"
+2025/06/09 13:06:20 main.go:169: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 13:06:20 main.go:180: Server shutdown gracefully
+2025/06/09 13:06:20 main.go:183: Application closed.
+2025/06/09 13:06:20 main.go:71: DataBAse connection closed.
+2025/06/09 13:06:34 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 13:06:34 db.go:52: Current DB schema version: 0
+2025/06/09 13:06:34 db.go:98: Do migration for version 1...
+2025/06/09 13:06:34 db.go:109: Migration for version 1 compleetd successfully.
+2025/06/09 13:06:34 db.go:98: Do migration for version 2...
+2025/06/09 13:06:34 db.go:109: Migration for version 2 compleetd successfully.
+2025/06/09 13:06:34 db.go:98: Do migration for version 3...
+2025/06/09 13:06:34 db.go:109: Migration for version 3 compleetd successfully.
+2025/06/09 13:06:34 db.go:112: All DB migrations completed.
+2025/06/09 13:06:34 main.go:82: HTML-templates successfully loaded.
+2025/06/09 13:06:34 main.go:156: Web Server launch on :8080...
+2025/06/09 13:07:15 handlers.go:132: Successfully created new backup task: Daily Document Backup3
+2025/06/09 13:07:19 handlers.go:212: EditJobFormHandler: Successfully rendered edit form for job ID 1.
+2025/06/09 13:07:26 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 13:07:26 handlers.go:248: UpdateJobHandler: Job ID 1, Form values - Name: Daily Document Backup, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: true
+2025/06/09 13:07:26 handlers.go:261: UpdateJobHandler: Error updating backup task in DB (ID 1): error parsing updated_at for task with ID 1: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:07:27 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:07:29 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:07:30 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:07:55 main.go:169: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 13:07:55 main.go:180: Server shutdown gracefully
+2025/06/09 13:07:55 main.go:183: Application closed.
+2025/06/09 13:07:55 main.go:71: DataBAse connection closed.
+2025/06/09 13:19:06 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 13:19:06 db.go:52: Current DB schema version: 3
+2025/06/09 13:19:06 db.go:112: All DB migrations completed.
+2025/06/09 13:19:06 main.go:82: HTML-templates successfully loaded.
+2025/06/09 13:19:06 main.go:156: Web Server launch on :8080...
+2025/06/09 13:19:09 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:19:10 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:19:11 handlers.go:49: Error getting backup tasks: error parsing updated_at for task: parsing time "2025-06-09 13:07:26.0394786+03:00": extra text: "4786+03:00"
+2025/06/09 13:19:27 main.go:169: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 13:19:27 main.go:180: Server shutdown gracefully
+2025/06/09 13:19:27 main.go:183: Application closed.
+2025/06/09 13:19:27 main.go:71: DataBAse connection closed.
+2025/06/09 13:19:35 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 13:19:35 db.go:52: Current DB schema version: 0
+2025/06/09 13:19:35 db.go:98: Do migration for version 1...
+2025/06/09 13:19:35 db.go:109: Migration for version 1 compleetd successfully.
+2025/06/09 13:19:35 db.go:98: Do migration for version 2...
+2025/06/09 13:19:35 db.go:109: Migration for version 2 compleetd successfully.
+2025/06/09 13:19:35 db.go:98: Do migration for version 3...
+2025/06/09 13:19:35 db.go:109: Migration for version 3 compleetd successfully.
+2025/06/09 13:19:35 db.go:112: All DB migrations completed.
+2025/06/09 13:19:35 main.go:82: HTML-templates successfully loaded.
+2025/06/09 13:19:35 main.go:156: Web Server launch on :8080...
+2025/06/09 13:19:48 handlers.go:132: Successfully created new backup task: Daily Document Backup3
+2025/06/09 13:19:50 handlers.go:49: Error getting backup tasks: error parsing created_at for task: parsing time "2025-06-09T13:19:48.8607955+03:00" as "2006-01-02 15:04:05.000": cannot parse "T13:19:48.8607955+03:00" as " "
+2025/06/09 13:19:52 handlers.go:49: Error getting backup tasks: error parsing created_at for task: parsing time "2025-06-09T13:19:48.8607955+03:00" as "2006-01-02 15:04:05.000": cannot parse "T13:19:48.8607955+03:00" as " "
+2025/06/09 13:19:53 handlers.go:49: Error getting backup tasks: error parsing created_at for task: parsing time "2025-06-09T13:19:48.8607955+03:00" as "2006-01-02 15:04:05.000": cannot parse "T13:19:48.8607955+03:00" as " "
+2025/06/09 13:22:06 main.go:169: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 13:22:06 main.go:180: Server shutdown gracefully
+2025/06/09 13:22:06 main.go:183: Application closed.
+2025/06/09 13:22:06 main.go:71: DataBAse connection closed.
+2025/06/09 13:22:12 db.go:28: DataBase SQLite successfully connected: ./data/backup.db
+2025/06/09 13:22:12 db.go:52: Current DB schema version: 3
+2025/06/09 13:22:12 db.go:112: All DB migrations completed.
+2025/06/09 13:22:12 main.go:82: HTML-templates successfully loaded.
+2025/06/09 13:22:12 main.go:156: Web Server launch on :8080...
+2025/06/09 13:22:20 handlers.go:212: EditJobFormHandler: Successfully rendered edit form for job ID 1.
+2025/06/09 13:22:24 handlers.go:216: UpdateJobHandler: Received PUT request.
+2025/06/09 13:22:24 handlers.go:248: UpdateJobHandler: Job ID 1, Form values - Name: Daily Document Backup, Source: C:\Users\user\Documents, Dest: E:\BackupData\Documents, Schedule: manual, Active: true
+2025/06/09 13:22:24 handlers.go:273: UpdateJobHandler: Successfully updated backup task: Daily Document Backup (ID: 1)
+2025/06/09 13:27:48 main.go:169: Received system signal: interrupt. Begin gracefull shutdown...
+2025/06/09 13:27:48 main.go:180: Server shutdown gracefully
+2025/06/09 13:27:48 main.go:183: Application closed.
+2025/06/09 13:27:48 main.go:71: DataBAse connection closed.

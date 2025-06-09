@@ -85,7 +85,7 @@ func (r *UserRepo) AuthenticateUser(username, password string) (*User, error) {
 	return user, nil
 }
 
-// Update USer password //TODO: add update for another fields
+// Update User password //TODO: add update for another fields
 func (r *UserRepo) UpdateUser(user *User, newPassword string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
